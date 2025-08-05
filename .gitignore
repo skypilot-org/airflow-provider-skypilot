@@ -1,0 +1,14 @@
+**/.DS_Store
+**/*.pyc
+**/__pycache__/
+*.egg-info/
+*.eggs/
+
+build/
+.vscode/
+.idea/
+.env
+
+# For editor files
+*.swp
+.coverage
