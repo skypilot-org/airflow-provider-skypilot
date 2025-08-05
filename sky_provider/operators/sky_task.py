@@ -1,12 +1,12 @@
-from typing import Dict, Sequence, TypedDict
+from typing import Dict, Sequence, Type, TypedDict
 
 from airflow.exceptions import AirflowException
 from airflow.providers.standard.operators.python import \
     PythonVirtualenvOperator
 from airflow.sdk import Variable
 
-from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
-                                CredentialsOverride)
+from .credentials_utils import (CREDENTIAL_HANDLERS, CloudCredentialsHandler,
+                                ClusterCredentials, CredentialsOverride)
 
 
 class SkyTaskOperator(PythonVirtualenvOperator):
@@ -45,11 +45,6 @@ class SkyTaskOperator(PythonVirtualenvOperator):
     ) -> None:
         if not yaml_path or not yaml_path.strip():
             raise ValueError('yaml_path must be a non-empty string')
-        if base_path.startswith(('http://', 'https://', 'git://')):
-            if not yaml_path or '/' in yaml_path:
-                raise ValueError(
-                    'When base_path is a git URL, yaml_path should be a '
-                    'relative path within the repository')
 
         skypilot_requirement = ('skypilot[all]' if skypilot_version is None
                                 else f'skypilot[all]=={skypilot_version}')
@@ -107,7 +102,7 @@ class SkyTaskOperator(PythonVirtualenvOperator):
             conn_id = self.credentials_override.get(
                 cloud_name)  # type: ignore[literal-required]
             if conn_id:
-                handler = handler_class(str(conn_id))
+                handler: CloudCredentialsHandler = handler_class(str(conn_id))
                 cluster_credentials = handler.get_cluster_credentials()
                 file_mounts.update(cluster_credentials['file_mounts'])
                 env_vars.update(cluster_credentials['env_vars'])

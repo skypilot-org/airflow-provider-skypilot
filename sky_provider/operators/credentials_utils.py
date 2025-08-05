@@ -2,7 +2,7 @@
 
 import abc
 import json
-from typing import Dict, TypedDict
+from typing import Dict, Type, TypedDict
 
 from airflow.exceptions import AirflowException
 from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
@@ -102,7 +102,7 @@ class GcpCredentialsHandler(CloudCredentialsHandler):
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 
 
-CREDENTIAL_HANDLERS = {
+CREDENTIAL_HANDLERS: Dict[str, Type[CloudCredentialsHandler]] = {
     'aws': AwsCredentialsHandler,
     'gcp': GcpCredentialsHandler,
 }
