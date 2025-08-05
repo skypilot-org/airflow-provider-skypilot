@@ -73,8 +73,6 @@ class GcpCredentialsHandler(CloudCredentialsHandler):
         if not status:
             raise AirflowException(f'GCP connection check failed: {message}')
 
-        test = hook.get_credentials()
-        print(f'test.get_cred_info(): {test.get_cred_info()}')
         conn = hook.get_connection(hook.gcp_conn_id)
         service_account_json = conn.extra_dejson.get('keyfile_dict')
 

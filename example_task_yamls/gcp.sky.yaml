@@ -1,0 +1,15 @@
+# Adapted from https://docs.skypilot.co/en/latest/getting-started/quickstart.html
+
+resources:
+  cpus: 1+
+
+setup: |
+  echo "Running setup."
+  curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+  tar -xf google-cloud-cli-linux-x86_64.tar.gz
+  ./google-cloud-sdk/install.sh
+  echo "Logged in as $(gcloud auth list --filter=status:ACTIVE --format="value(account)")"
+
+run: |
+  echo "Hello, SkyPilot!"
+  conda env list

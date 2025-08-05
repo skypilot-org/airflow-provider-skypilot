@@ -1,4 +1,4 @@
-# Adopted from https://docs.skypilot.co/en/latest/getting-started/quickstart.html
+# Adapted from https://docs.skypilot.co/en/latest/getting-started/quickstart.html
 
 resources:
   cpus: 1+

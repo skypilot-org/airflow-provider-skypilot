@@ -202,7 +202,7 @@ def run_sky_task_with_credentials(
                         check=True,
                     )
                 except subprocess.CalledProcessError as exc:
-                    raise AirflowException(
+                    raise RuntimeError(
                         f'Failed to clone repository {base_path}: {exc.stderr}'
                     ) from exc
 
@@ -217,13 +217,13 @@ def run_sky_task_with_credentials(
                             check=True,
                         )
                     except subprocess.CalledProcessError as exc:
-                        raise AirflowException(
+                        raise RuntimeError(
                             f'Failed to checkout branch {git_branch}: {exc.stderr}'
                         ) from exc
 
                 full_yaml_path = os.path.join(temp_dir, yaml_path)
                 if not os.path.exists(full_yaml_path):
-                    raise AirflowException(
+                    raise RuntimeError(
                         f'YAML file {yaml_path} not found in repository {base_path}'
                     )
 
@@ -236,7 +236,7 @@ def run_sky_task_with_credentials(
             os.chdir(base_path)
 
             if not os.path.exists(full_yaml_path):
-                raise AirflowException(
+                raise RuntimeError(
                     f'YAML file {full_yaml_path} does not exist')
 
             # Run the sky task
