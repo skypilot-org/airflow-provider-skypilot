@@ -12,17 +12,17 @@ default_args = {
 @dag(default_args=default_args,
      start_date=datetime(2023, 1, 1),
      tags=["skypilot"])
-def sky_gcp_credentials():
-    gcp_task = SkyTaskOperator(
-        task_id="gcp_task",
+def sky_aws_credentials():
+    aws_task = SkyTaskOperator(
+        task_id="aws_task",
         base_path=
         "https://github.com/skypilot-org/airflow-provider-skypilot.git",
         git_branch=
         "init",  # TODO: remove this before merging/once first PR is merged
-        yaml_path="example_task_yamls/gcp.sky.yaml",
-        credentials_override={"gcp": "skypilot_gcp_task"})
+        yaml_path="example_task_yamls/aws.sky.yaml",
+        credentials_override={"aws": "skypilot_aws_task"})
 
-    gcp_task
+    aws_task
 
 
-sky_gcp_credentials()
+sky_aws_credentials()
