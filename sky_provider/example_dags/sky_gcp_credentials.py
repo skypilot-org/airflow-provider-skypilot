@@ -13,8 +13,8 @@ default_args = {
      start_date=datetime(2023, 1, 1),
      tags=["skypilot"])
 def sky_gcp_credentials():
-    hello_task = SkyTaskOperator(
-        task_id="hello_task",
+    gcp_task = SkyTaskOperator(
+        task_id="gcp_task",
         base_path=
         "https://github.com/skypilot-org/airflow-provider-skypilot.git",
         git_branch=
@@ -22,7 +22,7 @@ def sky_gcp_credentials():
         yaml_path="example_task_yamls/gcp.sky.yaml",
         credentials_override={"gcp": "skypilot"})
 
-    hello_task
+    gcp_task
 
 
 sky_gcp_credentials()

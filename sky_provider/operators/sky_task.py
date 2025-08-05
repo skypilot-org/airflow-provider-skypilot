@@ -50,11 +50,13 @@ class SkyTaskOperator(PythonVirtualenvOperator):
                                 else f'skypilot[all]=={skypilot_version}')
         super().__init__(
             python_callable=run_sky_task_with_credentials,
-            requirements=[skypilot_requirement],
-            python_version='3.11',
             # PythonVirtualenvOperator now uses uv by default if available,
             # so we need to use --pre, as the Azure CLI has an issue with uv.
             pip_install_options=['--pre'],
+            # We had an issue with the latest (prerelease) version of httpx,
+            # so pinning it to the latest stable version for now.
+            requirements=[skypilot_requirement, 'httpx==0.28.1'],
+            python_version='3.11',
             **kwargs,
         )
 
@@ -66,15 +68,15 @@ class SkyTaskOperator(PythonVirtualenvOperator):
         self.skypilot_version = skypilot_version
 
     def execute(self, context):
-        # Get credentials in the main Airflow environment,
-        # as it depends on Airflow providers not
-        # available later in the virtualenv.
-        credentials = self._get_credentials()
-
         api_server_endpoint = Variable.get('SKYPILOT_API_SERVER_ENDPOINT')
         if not api_server_endpoint:
             raise AirflowException(
                 'SKYPILOT_API_SERVER_ENDPOINT Variable is not set')
+
+        # Get credentials in the main Airflow environment,
+        # as it depends on Airflow providers not
+        # available later in the virtualenv.
+        credentials = self._get_credentials()
 
         self.op_args = [
             self.base_path,
