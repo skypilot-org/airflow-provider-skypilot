@@ -5,8 +5,8 @@ from airflow.providers.standard.operators.python import \
     PythonVirtualenvOperator
 from airflow.sdk import Variable
 
-from .credentials_utils import (CREDENTIAL_HANDLERS, CloudCredentialsHandler,
-                                ClusterCredentials, CredentialsOverride)
+from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
+                                CredentialsOverride)
 
 
 class SkyTaskOperator(PythonVirtualenvOperator):
@@ -102,7 +102,7 @@ class SkyTaskOperator(PythonVirtualenvOperator):
             conn_id = self.credentials_override.get(
                 cloud_name)  # type: ignore[literal-required]
             if conn_id:
-                handler: CloudCredentialsHandler = handler_class(str(conn_id))
+                handler = handler_class(str(conn_id))
                 cluster_credentials = handler.get_cluster_credentials()
                 file_mounts.update(cluster_credentials['file_mounts'])
                 env_vars.update(cluster_credentials['env_vars'])
