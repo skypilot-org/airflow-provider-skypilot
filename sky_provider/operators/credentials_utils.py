@@ -98,8 +98,6 @@ class GcpCredentialsHandler(CloudCredentialsHandler):
         env_vars = {
             'GOOGLE_APPLICATION_CREDENTIALS': '/tmp/gcp-service-account.json'
         }
-        # if service_account_json.get('project_id'):
-        #     env_vars['GOOGLE_CLOUD_PROJECT'] = service_account_json['project_id']
 
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 

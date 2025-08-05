@@ -148,12 +148,11 @@ def run_sky_task_with_credentials(
         task_config['envs'].update(envs_override)
         task_config['envs'].update(credentials['env_vars'])
 
-        # Create temporary files for credential content,
+        # Create temporary files for storing credentials,
         # which will be mounted on the cluster.
         temp_files = []
         try:
             for dst_path, content in credentials['file_mounts'].items():
-                # Create a temporary file with the credential content
                 temp_file = tempfile.NamedTemporaryFile(mode='w',
                                                         delete=False,
                                                         suffix='.tmp')
