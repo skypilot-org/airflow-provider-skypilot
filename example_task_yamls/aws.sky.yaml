@@ -1,0 +1,15 @@
+# Adapted from https://docs.skypilot.co/en/latest/getting-started/quickstart.html
+
+resources:
+  cpus: 1+
+
+setup: |
+  echo "Running setup."
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  echo "Logged in as $(aws sts get-caller-identity --query 'Arn' --output text)"
+
+run: |
+  echo "Hello, SkyPilot!"
+  conda env list
