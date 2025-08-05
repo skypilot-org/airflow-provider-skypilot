@@ -8,7 +8,7 @@ setup: |
   curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
   tar -xf google-cloud-cli-linux-x86_64.tar.gz
   ./google-cloud-sdk/install.sh
-  mv google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
+  sudo mv google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
   echo "Logged in as $(gcloud auth list --filter=status:ACTIVE --format="value(account)")"
 
 run: |
