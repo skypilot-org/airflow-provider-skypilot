@@ -21,12 +21,18 @@ You can install this package on top of an existing Airflow deployment via `pip i
 1. Deploy a SkyPilot API Server: https://docs.skypilot.co/en/v0.9.3/reference/api-server/api-server-admin-deploy.html
 2. Set the `SKYPILOT_API_SERVER_ENDPOINT` variable in Airflow to point to the remote API Server endpoint from step 1
 
-    <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="480">
+    <p align="center">
+        <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="480">
+    </p>
 
 3. [Optional] Create connections in Airflow to store your cloud credentials. Today, we support AWS and GCP connections.
 
-    <img alt="Airflow variables" src="https://i.imgur.com/9VbD44X.png" width="480">
-    <img alt="Airflow variables" src="https://i.imgur.com/meHEw8w.png" width="480">
+    <p align="center">
+        <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="480">
+    </p>
+    <p align="center">
+        <img alt="Airflow GCP connection" src="https://i.imgur.com/meHEw8w.png" width="480">
+    </p>
 
 4. Import `SkyTaskOperator`, and use it in your Airflow DAG.
 
