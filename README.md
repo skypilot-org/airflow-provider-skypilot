@@ -23,8 +23,9 @@ upon successful installation.
 
 ## Configuration and Usage
 
-1. Deploy a SkyPilot API Server: https://docs.skypilot.co/en/latest/reference/api-server/api-server-admin-deploy.html
-2. Set the `SKYPILOT_API_SERVER_ENDPOINT` variable in Airflow to point to the remote API Server endpoint from step 1
+1. Deploy a SkyPilot [remote API Server](https://docs.skypilot.co/en/latest/reference/api-server/api-server.html#remote-api-server-multi-user-teams)
+
+2. Set the `SKYPILOT_API_SERVER_ENDPOINT` variable in Airflow to point to your remote API Server endpoint
 
     <p align="center">
         <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="720">
@@ -57,6 +58,38 @@ upon successful installation.
     ```
 
 See `sky_provider/example_dags` for more examples.
+
+## Managing SkyPilot Version
+
+All operators supports both stable and nightly versions of SkyPilot.
+
+- **Default**: Uses the latest stable release
+  ```python
+  SkyTaskOperator(
+      task_id="my_task",  # skypilot[all] (latest stable)
+      ...
+  )
+  ```
+
+- **Stable versions**: Use the standard SkyPilot package
+  ```python
+  SkyTaskOperator(
+      task_id="my_task",
+      skypilot_version="0.10.0",  # skypilot[all]==0.10.0
+      ...
+  )
+  ```
+
+- **Nightly versions**: Automatically use the nightly package for dev versions
+  ```python
+  SkyTaskOperator(
+      task_id="my_task",
+      skypilot_version="1.0.0.dev20250806",  # skypilot-nightly[all]==1.0.0.dev20250806
+      ...
+  )
+  ```
+
+The operator automatically detects nightly versions by checking for "dev" in the version string.
 
 ## Requirements
 

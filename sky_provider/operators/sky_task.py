@@ -1,9 +1,15 @@
 from typing import Dict, Optional, Sequence, Type, TypedDict
 
+from airflow import __version__ as airflow_version
 from airflow.exceptions import AirflowException
-from airflow.models import Variable
 from airflow.providers.standard.operators.python import \
     PythonVirtualenvOperator
+from packaging.version import Version
+
+if Version(airflow_version) >= Version("3.0.0"):
+    from airflow.sdk import Variable
+else:
+    from airflow.models import Variable
 
 from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
                                 CredentialsOverride)
@@ -46,8 +52,12 @@ class SkyTaskOperator(PythonVirtualenvOperator):
         if not yaml_path or not yaml_path.strip():
             raise ValueError('yaml_path must be a non-empty string')
 
-        skypilot_requirement = ('skypilot[all]' if skypilot_version is None
-                                else f'skypilot[all]=={skypilot_version}')
+        if skypilot_version is None:
+            skypilot_requirement = 'skypilot[all]'
+        elif 'dev' in skypilot_version:
+            skypilot_requirement = f'skypilot-nightly[all]=={skypilot_version}'
+        else:
+            skypilot_requirement = f'skypilot[all]=={skypilot_version}'
         super().__init__(
             python_callable=run_sky_task_with_credentials,
             # PythonVirtualenvOperator now uses uv by default if available,
