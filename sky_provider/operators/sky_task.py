@@ -57,6 +57,8 @@ class SkyTaskOperator(PythonVirtualenvOperator):
             # so pinning it to the latest stable version for now.
             requirements=[skypilot_requirement, 'httpx==0.28.1'],
             python_version='3.11',
+            # Needed for git to work from the virtualenv.
+            system_site_packages=True,
             **kwargs,
         )
 

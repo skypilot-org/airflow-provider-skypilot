@@ -11,6 +11,7 @@ default_args = {
 
 @dag(default_args=default_args,
      start_date=datetime(2023, 1, 1),
+     catchup=False,
      tags=["skypilot"])
 def sky_hello():
     hello_task = SkyTaskOperator(
