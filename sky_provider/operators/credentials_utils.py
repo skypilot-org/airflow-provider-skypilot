@@ -2,7 +2,7 @@
 
 import abc
 import json
-from typing import Dict, Optional, Type, TypedDict
+from typing import Dict, Final, Optional, Type, TypedDict
 
 from airflow.exceptions import AirflowException
 from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
@@ -45,7 +45,7 @@ class CloudCredentialsHandler(abc.ABC):
 class AwsCredentialsHandler(CloudCredentialsHandler):
     """Handler for AWS credentials using AwsBaseHook."""
 
-    credentials_path = '/tmp/aws-credentials'
+    CREDENTIALS_PATH: Final[str] = '/tmp/aws-credentials'
 
     def get_cluster_credentials(self) -> ClusterCredentials:
         hook = AwsBaseHook(aws_conn_id=self.conn_id)
@@ -61,15 +61,15 @@ aws_secret_access_key = {creds.secret_key}
         if creds.token:
             aws_creds_content += f'aws_session_token = {creds.token}\n'
 
-        file_mounts = {self.credentials_path: aws_creds_content}
-        env_vars = {'AWS_SHARED_CREDENTIALS_FILE': self.credentials_path}
+        file_mounts = {self.CREDENTIALS_PATH: aws_creds_content}
+        env_vars = {'AWS_SHARED_CREDENTIALS_FILE': self.CREDENTIALS_PATH}
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 
 
 class GcpCredentialsHandler(CloudCredentialsHandler):
     """Handler for GCP credentials using GoogleBaseHook."""
 
-    credentials_path = '/tmp/gcp-service-account.json'
+    CREDENTIALS_PATH: Final[str] = '/tmp/gcp-service-account.json'
 
     def get_cluster_credentials(self) -> ClusterCredentials:
         hook = GoogleBaseHook(gcp_conn_id=self.conn_id)
@@ -92,8 +92,8 @@ class GcpCredentialsHandler(CloudCredentialsHandler):
                 f'Invalid JSON format in keyfile_dict: {service_account_json}'
             ) from exc
 
-        file_mounts = {self.credentials_path: service_account_json}
-        env_vars = {'GOOGLE_APPLICATION_CREDENTIALS': self.credentials_path}
+        file_mounts = {self.CREDENTIALS_PATH: service_account_json}
+        env_vars = {'GOOGLE_APPLICATION_CREDENTIALS': self.CREDENTIALS_PATH}
 
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 
