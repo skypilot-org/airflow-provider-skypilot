@@ -14,6 +14,13 @@
 
 You can install this package on top of an existing Airflow deployment via `pip install airflow-provider-skypilot`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
 
+You should be able to see `airflow-provider-skypilot` on the Providers page
+upon successful installation.
+
+<p align="center">
+    <img alt="Airflow variables" src="https://i.imgur.com/YFSdzKz.png" width="720">
+</p>
+
 ## Configuration and Usage
 
 ### Prerequisites

@@ -45,6 +45,8 @@ class CloudCredentialsHandler(abc.ABC):
 class AwsCredentialsHandler(CloudCredentialsHandler):
     """Handler for AWS credentials using AwsBaseHook."""
 
+    credentials_path = '/tmp/aws-credentials'
+
     def get_cluster_credentials(self) -> ClusterCredentials:
         hook = AwsBaseHook(aws_conn_id=self.conn_id)
         status, message = hook.test_connection()
@@ -59,13 +61,15 @@ aws_secret_access_key = {creds.secret_key}
         if creds.token:
             aws_creds_content += f'aws_session_token = {creds.token}\n'
 
-        file_mounts = {'/tmp/aws-credentials': aws_creds_content}
-        env_vars = {'AWS_SHARED_CREDENTIALS_FILE': '/tmp/aws-credentials'}
+        file_mounts = {self.credentials_path: aws_creds_content}
+        env_vars = {'AWS_SHARED_CREDENTIALS_FILE': self.credentials_path}
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 
 
 class GcpCredentialsHandler(CloudCredentialsHandler):
     """Handler for GCP credentials using GoogleBaseHook."""
+
+    credentials_path = '/tmp/gcp-service-account.json'
 
     def get_cluster_credentials(self) -> ClusterCredentials:
         hook = GoogleBaseHook(gcp_conn_id=self.conn_id)
@@ -81,21 +85,15 @@ class GcpCredentialsHandler(CloudCredentialsHandler):
                 'No service account key found in GCP connection. '
                 'Please add it to keyfile_dict in the connection.')
 
-        if isinstance(service_account_json, str):
-            try:
-                service_account_json = json.loads(service_account_json)
-            except json.JSONDecodeError as exc:
-                raise AirflowException(
-                    f'Invalid JSON format in keyfile_dict: {service_account_json}'
-                ) from exc
+        try:
+            json.loads(service_account_json)
+        except json.JSONDecodeError as exc:
+            raise AirflowException(
+                f'Invalid JSON format in keyfile_dict: {service_account_json}'
+            ) from exc
 
-        file_mounts = {
-            '/tmp/gcp-service-account.json':
-            json.dumps(service_account_json, indent=2)
-        }
-        env_vars = {
-            'GOOGLE_APPLICATION_CREDENTIALS': '/tmp/gcp-service-account.json'
-        }
+        file_mounts = {self.credentials_path: service_account_json}
+        env_vars = {'GOOGLE_APPLICATION_CREDENTIALS': self.credentials_path}
 
         return {'file_mounts': file_mounts, 'env_vars': env_vars}
 
