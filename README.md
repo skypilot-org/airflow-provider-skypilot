@@ -10,6 +10,15 @@
 </h3>
 <br/>
 
+## Operators
+
+This provider includes the `SkyTaskOperator` which creates SkyPilot clusters, runs the task
+defined in the SkyPilot YAML, and terminates the cluster upon completion.
+It integrates with Airflow connections so that you can use your existing credentials
+with your SkyPilot tasks.
+
+More operators like `SkyJobOperator` are in the roadmap, so stay tuned for that as well.
+
 ## Installation
 
 You can install this package on top of an existing Airflow deployment via `pip install airflow-provider-skypilot`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
@@ -71,7 +80,7 @@ All operators supports both stable and nightly versions of SkyPilot.
   )
   ```
 
-- **Stable versions**: Use the standard SkyPilot package
+- **Stable versions**
   ```python
   SkyTaskOperator(
       task_id="my_task",
@@ -80,7 +89,7 @@ All operators supports both stable and nightly versions of SkyPilot.
   )
   ```
 
-- **Nightly versions**: Automatically use the nightly package for dev versions
+- **Nightly versions**
   ```python
   SkyTaskOperator(
       task_id="my_task",
