@@ -78,8 +78,8 @@ using [PythonVirtualenvOperator](https://airflow.apache.org/docs/apache-airflow-
 
 To avoid package conflicts, create and activate a clean conda environment:
 ```bash
-conda create -y -n airflow-provider-sky python=3.10
-conda activate airflow-provider-sky
+conda create -y -n airflow-provider-skypilot python=3.10
+conda activate airflow-provider-skypilot
 ```
 
 ### Install Dependencies
