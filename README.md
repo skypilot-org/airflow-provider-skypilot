@@ -18,7 +18,7 @@ You can install this package on top of an existing Airflow deployment via `pip i
 
 ### Prerequisites
 
-1. Deploy a SkyPilot API Server: https://docs.skypilot.co/en/v0.9.3/reference/api-server/api-server-admin-deploy.html
+1. Deploy a SkyPilot API Server: https://docs.skypilot.co/en/latest/reference/api-server/api-server-admin-deploy.html
 2. Set the `SKYPILOT_API_SERVER_ENDPOINT` variable in Airflow to point to the remote API Server endpoint from step 1
 
     <p align="center">
