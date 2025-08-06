@@ -23,8 +23,6 @@ upon successful installation.
 
 ## Configuration and Usage
 
-### Prerequisites
-
 1. Deploy a SkyPilot API Server: https://docs.skypilot.co/en/latest/reference/api-server/api-server-admin-deploy.html
 2. Set the `SKYPILOT_API_SERVER_ENDPOINT` variable in Airflow to point to the remote API Server endpoint from step 1
 
