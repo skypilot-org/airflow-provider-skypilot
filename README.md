@@ -55,13 +55,14 @@ See `sky_provider/example_dags` for more examples.
 
 ## Requirements
 
-The minimum Apache Airflow version supported by this provider distribution is ``2.6.0``.
+The minimum Apache Airflow version supported by this provider distribution is ``2.10.0``.
 
 | PIP package                                 | Version required |
 |---------------------------------------------|------------------|
-| ``apache-airflow``                          | ``>=2.6.0``      |
+| ``apache-airflow``                          | ``>=2.10.0``     |
 | ``apache-airflow-providers-google``         | ``>=10.0.0``     |
 | ``apache-airflow-providers-amazon``         | ``>=8.0.0``      |
+| ``apache-airflow-providers-standard``       |                  |
 
 Note: The `skypilot` package is not included here, as it is used within a virtual environment,
 using [PythonVirtualenvOperator](https://airflow.apache.org/docs/apache-airflow-providers-standard/stable/operators/python.html#pythonvirtualenvoperator), so that it does not conflict with `apache-airflow` on the main Python environment.

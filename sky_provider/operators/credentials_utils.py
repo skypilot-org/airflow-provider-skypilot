@@ -2,7 +2,7 @@
 
 import abc
 import json
-from typing import Dict, Type, TypedDict
+from typing import Dict, Optional, Type, TypedDict
 
 from airflow.exceptions import AirflowException
 from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
@@ -10,8 +10,8 @@ from airflow.providers.google.common.hooks.base_google import GoogleBaseHook
 
 
 class CredentialsOverride(TypedDict):
-    aws: str | None
-    gcp: str | None
+    aws: Optional[str]
+    gcp: Optional[str]
 
 
 class ClusterCredentials(TypedDict):

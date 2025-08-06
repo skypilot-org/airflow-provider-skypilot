@@ -1,9 +1,9 @@
-from typing import Dict, Sequence, Type, TypedDict
+from typing import Dict, Optional, Sequence, Type, TypedDict
 
 from airflow.exceptions import AirflowException
+from airflow.models import Variable
 from airflow.providers.standard.operators.python import \
     PythonVirtualenvOperator
-from airflow.sdk import Variable
 
 from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
                                 CredentialsOverride)
@@ -37,10 +37,10 @@ class SkyTaskOperator(PythonVirtualenvOperator):
         *,
         base_path: str,
         yaml_path: str,
-        git_branch: str | None = None,
-        credentials_override: CredentialsOverride | None = None,
-        envs_override: Dict[str, str] | None = None,
-        skypilot_version: str | None = None,
+        git_branch: Optional[str] = None,
+        credentials_override: Optional[CredentialsOverride] = None,
+        envs_override: Optional[Dict[str, str]] = None,
+        skypilot_version: Optional[str] = None,
         **kwargs,
     ) -> None:
         if not yaml_path or not yaml_path.strip():
@@ -115,7 +115,7 @@ class SkyTaskOperator(PythonVirtualenvOperator):
 def run_sky_task_with_credentials(
     base_path: str,
     yaml_path: str,
-    git_branch: str | None,
+    git_branch: Optional[str],
     credentials: ClusterCredentials,
     envs_override: Dict[str, str],
     api_server_endpoint: str,
