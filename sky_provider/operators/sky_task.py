@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Sequence, Type, TypedDict
+from typing import Dict, Optional, Sequence
 
 from airflow import __version__ as airflow_version
 from airflow.exceptions import AirflowException
