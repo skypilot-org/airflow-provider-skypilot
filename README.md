@@ -1,7 +1,10 @@
-<p align="center">
+<div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
     <img alt="Airflow" src="https://cwiki.apache.org/confluence/download/attachments/145723561/airflow_transparent.png?api=v2" width="60" />
-    <img alt="SkyPilot" src="https://docs.skypilot.co/en/latest/_images/SkyPilot_wide_light.svg" width="240" />
-</p>
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/skypilot-org/skypilot/master/docs/source/images/skypilot-wide-dark-1k.png">
+        <img alt="SkyPilot" src="https://raw.githubusercontent.com/skypilot-org/skypilot/master/docs/source/images/skypilot-wide-light-1k.png" width=240>
+    </picture>
+</div>
 <h1 align="center">
   Apache Airflow Provider for SkyPilot
 </h1>
