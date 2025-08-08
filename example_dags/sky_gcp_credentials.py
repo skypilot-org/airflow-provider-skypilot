@@ -1,7 +1,7 @@
 import pendulum
 from airflow import decorators
 
-from sky_provider import operators
+from skypilot_provider import operators
 
 default_args = {
     "owner": "airflow",
@@ -14,7 +14,7 @@ default_args = {
                 catchup=False,
                 tags=["skypilot"])
 def sky_gcp_credentials():
-    gcp_task = operators.SkyTaskOperator(
+    gcp_task = operators.SkyPilotClusterOperator(
         task_id="gcp_task",
         base_path=
         "https://github.com/skypilot-org/airflow-provider-skypilot.git",

@@ -1,7 +1,7 @@
 import pendulum
 from airflow import decorators
 
-from sky_provider import operators
+from skypilot_provider import operators
 
 default_args = {
     "owner": "airflow",
@@ -14,7 +14,7 @@ default_args = {
                 catchup=False,
                 tags=["skypilot"])
 def sky_hello_local():
-    hello_task = operators.SkyTaskOperator(
+    hello_task = operators.SkyPilotClusterOperator(
         task_id="hello_task",
         # If running locally, copy the example_skypilot_yamls/ directory into
         # the airflow-worker container:

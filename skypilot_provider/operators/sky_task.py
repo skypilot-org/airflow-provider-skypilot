@@ -15,7 +15,7 @@ from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
                                 CredentialsOverride)
 
 
-class SkyTaskOperator(PythonVirtualenvOperator):
+class SkyPilotClusterOperator(PythonVirtualenvOperator):
     """
     Creates a SkyPilot cluster and runs a task,
     as defined in the task YAML file.
@@ -175,10 +175,6 @@ def run_sky_task_with_credentials(
             cluster_uid = str(uuid.uuid4())[:4]
             task_name = os.path.splitext(os.path.basename(yaml_path))[0]
             cluster_name = f'{task_name}-{cluster_uid}'
-
-            check_request_id = sky.check(verbose=True)
-            sky.stream_and_get(check_request_id)
-
             print(f'Starting SkyPilot cluster {cluster_name}')
             launch_request_id = sky.launch(task,
                                            cluster_name=cluster_name,

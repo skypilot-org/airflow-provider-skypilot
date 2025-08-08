@@ -18,7 +18,7 @@ repos:
     rev: v1.4.0  # Match the version from requirements-dev.txt
     hooks:
     -   id: mypy
-        files: ^sky_provider/
+        files: ^skypilot_provider/
         additional_dependencies:
             - types-setuptools
             - types-PyYAML
@@ -35,7 +35,7 @@ repos:
     rev: v2.14.5  # Match the version from requirements-dev.txt
     hooks:
     -   id: pylint
-        files: ^sky_provider/
+        files: ^skypilot_provider/
         additional_dependencies:
             - pylint-quotes==0.2.3  # Match the version from requirements-dev.txt
             - apache-airflow>=2.6.0

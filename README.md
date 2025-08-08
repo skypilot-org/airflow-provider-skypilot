@@ -57,7 +57,7 @@ upon successful installation.
     ```python
     from airflow import DAG
 
-    from sky_provider.operators import SkyTaskOperator
+    from skypilot_provider.operators import SkyTaskOperator
 
     with DAG(...) as dag:
         ...
@@ -69,7 +69,7 @@ upon successful installation.
         ...
     ```
 
-See `sky_provider/example_dags` for more examples.
+See `example_dags/` for more examples.
 
 ## Managing SkyPilot Version
 
