@@ -1,3 +1,3 @@
-from .sky_task import SkyPilotClusterOperator
+from .cluster import SkyPilotClusterOperator
 
 __all__ = ['SkyPilotClusterOperator']
