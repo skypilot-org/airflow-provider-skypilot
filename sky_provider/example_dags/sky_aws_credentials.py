@@ -20,7 +20,7 @@ def sky_aws_credentials():
         "https://github.com/skypilot-org/airflow-provider-skypilot.git",
         git_branch=
         "init",  # TODO: remove this before merging/once first PR is merged
-        yaml_path="example_task_yamls/aws.sky.yaml",
+        yaml_path="example_skypilot_yamls/aws.sky.yaml",
         credentials_override={"aws": "skypilot_aws_task"})
 
     aws_task
