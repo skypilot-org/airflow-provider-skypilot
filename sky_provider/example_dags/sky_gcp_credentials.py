@@ -1,7 +1,7 @@
-from airflow.decorators import dag
-from pendulum import datetime
+import pendulum
+from airflow import decorators
 
-from sky_provider.operators import SkyTaskOperator
+from sky_provider import operators
 
 default_args = {
     "owner": "airflow",
@@ -9,12 +9,12 @@ default_args = {
 }
 
 
-@dag(default_args=default_args,
-     start_date=datetime(2023, 1, 1),
-     catchup=False,
-     tags=["skypilot"])
+@decorators.dag(default_args=default_args,
+                start_date=pendulum.datetime(2023, 1, 1),
+                catchup=False,
+                tags=["skypilot"])
 def sky_gcp_credentials():
-    gcp_task = SkyTaskOperator(
+    gcp_task = operators.SkyTaskOperator(
         task_id="gcp_task",
         base_path=
         "https://github.com/skypilot-org/airflow-provider-skypilot.git",
