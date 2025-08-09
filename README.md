@@ -55,20 +55,44 @@ upon successful installation.
 4. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
 
     ```python
-    from airflow import DAG
-
     from skypilot_provider.operators import SkyPilotClusterOperator
 
-    with DAG(...) as dag:
-        ...
-        task = SkyPilotClusterOperator(
-            task_id="data_preprocess",
-            # local file or remote file
-            task_file="/opt/airflow/data_preprocessing.sky.yaml",
-            # name is optional; if provided, cluster will use this exact name
-            name="data-preprocess",
+    ...
+
+    @dag(
+        default_args=default_args,
+        tags=["skypilot"],
+    )
+    def sky_training_workflow():
+        bucket_uuid = generate_bucket_uuid()
+
+        env_vars = {
+            "DATA_BUCKET_NAME": f"sky-data-demo-{bucket_uuid}",
+            "DATA_BUCKET_STORE_TYPE": "s3",
+        }
+
+        preprocess_task = SkyPilotClusterOperator(
+            task_id="preprocess",
+            yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/data_preprocessing.yaml",
+            env_vars=env_vars,
         )
-        ...
+
+        train_task = SkyPilotClusterOperator(
+            task_id="train",
+            yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/train.yaml",
+            env_vars=env_vars,
+        )
+
+        eval_task = SkyPilotClusterOperator(
+            task_id="eval",
+            yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/eval.yaml",
+            env_vars=env_vars,
+        )
+
+        # Define the workflow
+        bucket_uuid >> preprocess_task >> train_task >> eval_task
+
+    sky_training_workflow()
     ```
 
 See `example_dags/` for more examples.
