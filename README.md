@@ -125,7 +125,8 @@ The operator automatically detects nightly versions by checking for "dev" in the
 If you have resources that is not accessible with the cloud credentials on the API server,
 you can use a different cloud credential to grant the remote clusters created by the operator access to those resources.
 
-1. Create connections in Airflow to store your cloud credentials. Today, we support AWS and GCP connections.
+1. Create connections in Airflow to store your cloud credentials. Today, we support [AWS](https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/connections/aws.html)
+and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) connections.
     <p align="center">
         <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="720">
     </p>
