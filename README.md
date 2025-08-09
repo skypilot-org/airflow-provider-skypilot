@@ -43,16 +43,7 @@ upon successful installation.
         <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="720">
     </p>
 
-3. [Optional] Create connections in Airflow to store your cloud credentials. Today, we support AWS and GCP connections.
-
-    <p align="center">
-        <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="720">
-    </p>
-    <p align="center">
-        <img alt="Airflow GCP connection" src="https://i.imgur.com/meHEw8w.png" width="720">
-    </p>
-
-4. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
+3. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
 
     ```python
     from skypilot_provider.operators import SkyPilotClusterOperator
@@ -128,6 +119,30 @@ All operators supports both stable and nightly versions of SkyPilot.
   ```
 
 The operator automatically detects nightly versions by checking for "dev" in the version string.
+
+## Optional: Accessing private resources from remote clusters
+
+If you have resources that is not accessible with the cloud credentials on the API server,
+you can use a different cloud credential to grant the remote clusters created by the operator access to those resources.
+
+1. Create connections in Airflow to store your cloud credentials. Today, we support AWS and GCP connections.
+    <p align="center">
+        <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="720">
+    </p>
+    <p align="center">
+        <img alt="Airflow GCP connection" src="https://i.imgur.com/meHEw8w.png" width="720">
+    </p>
+
+2. Use the connection in the operator:
+
+    ```python
+    SkyPilotClusterOperator(
+        task_id="my_task",
+        credentials_override={"gcp": "skypilot_gcp_task"},
+        ...
+    )
+    ```
+
 
 ## Requirements
 
