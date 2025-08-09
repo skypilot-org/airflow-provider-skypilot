@@ -16,11 +16,9 @@ default_args = {
 def sky_hello():
     hello_task = operators.SkyPilotClusterOperator(
         task_id="hello_task",
-        base_path=
-        "https://github.com/skypilot-org/airflow-provider-skypilot.git",
-        git_branch=
-        "init",  # TODO: remove this before merging/once first PR is merged
-        yaml_path="example_skypilot_yamls/hello.sky.yaml",
+        name="mycluster",
+        yaml_file=
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/init/example_skypilot_yamls/hello.sky.yaml",
     )
 
     hello_task

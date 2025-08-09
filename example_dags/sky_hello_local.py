@@ -18,9 +18,8 @@ def sky_hello_local():
         task_id="hello_task",
         # If running locally, copy the example_skypilot_yamls/ directory into
         # the airflow-worker container:
-        # docker compose cp ./example_skypilot_yamls/ airflow-worker:/opt/airflow/
-        base_path="/opt/airflow",
-        yaml_path="example_skypilot_yamls/hello.sky.yaml",
+        # docker cp ./example_skypilot_yamls/ airflow-worker:/opt/airflow/
+        yaml_file="/opt/airflow/example_skypilot_yamls/hello.sky.yaml",
     )
 
     hello_task

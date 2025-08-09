@@ -15,8 +15,8 @@
 
 ## Operators
 
-This provider includes the `SkyTaskOperator` which creates SkyPilot clusters, runs the task
-defined in the SkyPilot YAML, and terminates the cluster upon completion.
+This provider includes the `SkyPilotClusterOperator` which creates SkyPilot clusters, runs the task
+defined in a SkyPilot YAML (local file or remote URL), and terminates the cluster upon completion.
 It integrates with Airflow connections so that you can use your existing credentials
 with your SkyPilot tasks.
 
@@ -52,19 +52,21 @@ upon successful installation.
         <img alt="Airflow GCP connection" src="https://i.imgur.com/meHEw8w.png" width="720">
     </p>
 
-4. Import `SkyTaskOperator`, and use it in your Airflow DAG.
+4. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
 
     ```python
     from airflow import DAG
 
-    from skypilot_provider.operators import SkyTaskOperator
+    from skypilot_provider.operators import SkyPilotClusterOperator
 
     with DAG(...) as dag:
         ...
-        task = SkyTaskOperator(
+        task = SkyPilotClusterOperator(
             task_id="data_preprocess",
-            base_path="/opt/airflow", # This can point to a git repository too
-            yaml_path="data_preprocessing.sky.yaml",
+            # local file or remote file
+            task_file="/opt/airflow/data_preprocessing.sky.yaml",
+            # name is optional; if provided, cluster will use this exact name
+            name="data-preprocess",
         )
         ...
     ```
@@ -77,7 +79,7 @@ All operators supports both stable and nightly versions of SkyPilot.
 
 - **Default**: Uses the latest stable release
   ```python
-  SkyTaskOperator(
+  SkyPilotClusterOperator(
       task_id="my_task",  # skypilot[all] (latest stable)
       ...
   )
@@ -85,7 +87,7 @@ All operators supports both stable and nightly versions of SkyPilot.
 
 - **Stable versions**
   ```python
-  SkyTaskOperator(
+  SkyPilotClusterOperator(
       task_id="my_task",
       skypilot_version="0.10.0",  # skypilot[all]==0.10.0
       ...
@@ -94,7 +96,7 @@ All operators supports both stable and nightly versions of SkyPilot.
 
 - **Nightly versions**
   ```python
-  SkyTaskOperator(
+  SkyPilotClusterOperator(
       task_id="my_task",
       skypilot_version="1.0.0.dev20250806",  # skypilot-nightly[all]==1.0.0.dev20250806
       ...

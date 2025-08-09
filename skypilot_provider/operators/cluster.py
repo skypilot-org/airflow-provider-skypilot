@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Sequence
+from typing import Any, Dict, Optional, Sequence
 
 from airflow import __version__ as airflow_version
 from airflow.exceptions import AirflowException
@@ -18,21 +18,19 @@ from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
 class SkyPilotClusterOperator(PythonVirtualenvOperator):
     """
     Creates a SkyPilot cluster and runs a task,
-    as defined in the task YAML file.
+    as defined in the SkyPilot YAML file.
 
     Args:
-        base_path: Base path (local directory or git repo URL)
-        yaml_path: Path to the YAML file (relative to base_path)
-        git_branch: Optional git branch to checkout when base_path is a git repository.
+        yaml_file: Path to a local YAML file or an HTTP(S) URL to a remote YAML file.
+        name: Optional name for the cluster.
         credentials_override: Credentials override configuration.
         envs_override: Additional environment variables to override.
         skypilot_version: Optional version of SkyPilot to use.
     """
 
     template_fields: Sequence[str] = (
-        'base_path',
-        'yaml_path',
-        'git_branch',
+        'yaml_file',
+        'name',
         'credentials_override',
         'envs_override',
         'skypilot_version',
@@ -40,17 +38,17 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
 
     def __init__(
         self,
-        *,
-        base_path: str,
-        yaml_path: str,
-        git_branch: Optional[str] = None,
+        yaml_file: str,
+        name: Optional[str] = None,
         credentials_override: Optional[CredentialsOverride] = None,
         envs_override: Optional[Dict[str, str]] = None,
         skypilot_version: Optional[str] = None,
         **kwargs,
     ) -> None:
-        if not yaml_path or not yaml_path.strip():
-            raise ValueError('yaml_path must be a non-empty string')
+        if not yaml_file or not str(yaml_file).strip():
+            raise ValueError('yaml_file must be a non-empty string')
+        if name is not None and not str(name).strip():
+            raise ValueError('name must be a non-empty string')
 
         if skypilot_version is None:
             skypilot_requirement = 'skypilot[all]'
@@ -65,16 +63,13 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
             pip_install_options=['--pre'],
             # We had an issue with the latest (prerelease) version of httpx,
             # so pinning it to the latest stable version for now.
-            requirements=[skypilot_requirement, 'httpx==0.28.1'],
+            requirements=[skypilot_requirement, 'httpx<=0.28.1'],
             python_version='3.11',
-            # Needed for git to work from the virtualenv.
-            system_site_packages=True,
             **kwargs,
         )
 
-        self.base_path = base_path
-        self.yaml_path = yaml_path
-        self.git_branch = git_branch
+        self.yaml_file = yaml_file
+        self.name = name
         self.credentials_override = credentials_override
         self.envs_override = envs_override or {}
         self.skypilot_version = skypilot_version
@@ -90,14 +85,13 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
         # available later in the virtualenv.
         credentials = self._get_credentials()
 
-        self.op_args = [
-            self.base_path,
-            self.yaml_path,
-            self.git_branch,
-            credentials,
-            self.envs_override,
-            api_server_endpoint,
-        ]
+        self.op_kwargs = {
+            'yaml_file': self.yaml_file,
+            'name': self.name,
+            'credentials': credentials,
+            'envs_override': self.envs_override,
+            'api_server_endpoint': api_server_endpoint,
+        }
         return super().execute(context)
 
     def _get_credentials(self) -> ClusterCredentials:
@@ -125,29 +119,24 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
 
 
 def run_sky_task_with_credentials(
-    base_path: str,
-    yaml_path: str,
-    git_branch: Optional[str],
+    yaml_file: str,
+    name: Optional[str],
     credentials: ClusterCredentials,
     envs_override: Dict[str, str],
     api_server_endpoint: str,
 ):
     import os
-    import subprocess
     import tempfile
     import uuid
 
+    import httpx
     import yaml
 
-    def _run_sky_task_with_credentials(yaml_path: str,
-                                       credentials: ClusterCredentials,
-                                       envs_override: Dict[str, str]):
-        """Internal helper to run the sky task with credential artifacts."""
+    def _launch_from_config(task_config: Dict[str, Any], task_name_hint: str,
+                            credentials: ClusterCredentials,
+                            envs_override: Dict[str, str]):
+        """Launch a SkyPilot task from a config dict with injected credentials."""
         import sky
-
-        with open(os.path.expanduser(yaml_path), 'r',
-                  encoding='utf-8') as file:
-            task_config = yaml.safe_load(file)
 
         if 'envs' not in task_config:
             task_config['envs'] = {}
@@ -172,9 +161,8 @@ def run_sky_task_with_credentials(
                 task_config['file_mounts'][dst_path] = temp_file.name
 
             task = sky.Task.from_yaml_config(task_config)
-            cluster_uid = str(uuid.uuid4())[:4]
-            task_name = os.path.splitext(os.path.basename(yaml_path))[0]
-            cluster_name = f'{task_name}-{cluster_uid}'
+            cluster_name = (name if name is not None else
+                            f'{task_name_hint}-{str(uuid.uuid4())[:4]}')
             print(f'Starting SkyPilot cluster {cluster_name}')
             launch_request_id = sky.launch(task,
                                            cluster_name=cluster_name,
@@ -204,56 +192,23 @@ def run_sky_task_with_credentials(
 
     cwd = os.getcwd()
     try:
-        if base_path.startswith(('http://', 'https://', 'git://')):
-            with tempfile.TemporaryDirectory() as temp_dir:
-                try:
-                    # Clone the repository
-                    subprocess.run(
-                        ['git', 'clone', base_path, temp_dir],
-                        capture_output=True,
-                        text=True,
-                        check=True,
-                    )
-                except subprocess.CalledProcessError as exc:
-                    raise RuntimeError(
-                        f'Failed to clone repository {base_path}: {exc.stderr}'
-                    ) from exc
+        if yaml_file.startswith(('http://', 'https://')):
+            resp = httpx.get(yaml_file, timeout=10)
+            resp.raise_for_status()
+            cfg = yaml.safe_load(resp.text)
+            name_hint = os.path.splitext(os.path.basename(yaml_file))[0]
+            return _launch_from_config(cfg, name_hint, credentials,
+                                       envs_override)
 
-                # Checkout specific branch if provided
-                if git_branch:
-                    try:
-                        subprocess.run(
-                            ['git', 'checkout', git_branch],
-                            cwd=temp_dir,
-                            capture_output=True,
-                            text=True,
-                            check=True,
-                        )
-                    except subprocess.CalledProcessError as exc:
-                        raise RuntimeError(
-                            f'Failed to checkout branch {git_branch}: {exc.stderr}'
-                        ) from exc
+        expanded = os.path.expanduser(yaml_file)
+        if not os.path.exists(expanded):
+            raise RuntimeError(f'YAML file {expanded} does not exist')
 
-                full_yaml_path = os.path.join(temp_dir, yaml_path)
-                if not os.path.exists(full_yaml_path):
-                    raise RuntimeError(
-                        f'YAML file {yaml_path} not found in repository {base_path}'
-                    )
-
-                os.chdir(temp_dir)
-                return _run_sky_task_with_credentials(full_yaml_path,
-                                                      credentials,
-                                                      envs_override)
-        else:
-            full_yaml_path = os.path.join(base_path, yaml_path)
-            os.chdir(base_path)
-
-            if not os.path.exists(full_yaml_path):
-                raise RuntimeError(
-                    f'YAML file {full_yaml_path} does not exist')
-
-            # Run the sky task
-            return _run_sky_task_with_credentials(full_yaml_path, credentials,
-                                                  envs_override)
+        workdir = os.path.dirname(expanded) or cwd
+        os.chdir(workdir)
+        with open(expanded, 'r', encoding='utf-8') as f:
+            cfg = yaml.safe_load(f)
+        name_hint = os.path.splitext(os.path.basename(expanded))[0]
+        return _launch_from_config(cfg, name_hint, credentials, envs_override)
     finally:
         os.chdir(cwd)

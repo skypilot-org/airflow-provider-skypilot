@@ -11,11 +11,7 @@ from skypilot_provider.operators.cluster import SkyPilotClusterOperator
 
 @pytest.fixture
 def basic_operator_kwargs():
-    return {
-        'task_id': 'test_task',
-        'base_path': '/test/path',
-        'yaml_path': 'test.sky.yaml'
-    }
+    return {'task_id': 'test_task', 'yaml_file': '/test/path/test.sky.yaml'}
 
 
 @pytest.fixture
@@ -34,20 +30,26 @@ class TestSkyPilotClusterOperator:
 
     def test_init_with_valid_params(self, basic_operator_kwargs):
         operator = SkyPilotClusterOperator(**basic_operator_kwargs)
-        assert operator.base_path == '/test/path'
-        assert operator.yaml_path == 'test.sky.yaml'
-        assert operator.git_branch is None
+        assert operator.yaml_file == '/test/path/test.sky.yaml'
         assert operator.credentials_override is None
         assert operator.envs_override == {}
         assert operator.skypilot_version is None
 
-    @pytest.mark.parametrize("yaml_path", ["", "   "])
-    def test_init_with_invalid_yaml_path(self, basic_operator_kwargs,
-                                         yaml_path):
+    @pytest.mark.parametrize("yaml_file", ["", "   "])
+    def test_init_with_invalid_yaml_file(self, basic_operator_kwargs,
+                                         yaml_file):
         operator_kwargs = basic_operator_kwargs.copy()
-        operator_kwargs['yaml_path'] = yaml_path
+        operator_kwargs['yaml_file'] = yaml_file
         with pytest.raises(ValueError,
-                           match='yaml_path must be a non-empty string'):
+                           match='yaml_file must be a non-empty string'):
+            SkyPilotClusterOperator(**operator_kwargs)
+
+    @pytest.mark.parametrize("name", ["", "   "])
+    def test_init_with_invalid_name(self, basic_operator_kwargs, name):
+        operator_kwargs = basic_operator_kwargs.copy()
+        operator_kwargs['name'] = name
+        with pytest.raises(ValueError,
+                           match='name must be a non-empty string'):
             SkyPilotClusterOperator(**operator_kwargs)
 
     def test_init_with_all_params(self, basic_operator_kwargs):
@@ -57,14 +59,13 @@ class TestSkyPilotClusterOperator:
         operator_kwargs['credentials_override'] = credentials_override
         operator_kwargs['envs_override'] = envs_override
         operator_kwargs['skypilot_version'] = '0.10.0'
-        operator_kwargs['git_branch'] = 'main'
-
+        operator_kwargs['name'] = 'my-cluster'
         operator = SkyPilotClusterOperator(**operator_kwargs)
 
-        assert operator.git_branch == 'main'
         assert operator.credentials_override == credentials_override
         assert operator.envs_override == envs_override
         assert operator.skypilot_version == '0.10.0'
+        assert operator.name == 'my-cluster'
 
     @pytest.mark.parametrize("skypilot_version,expected_requirement", [
         (None, 'skypilot[all]'),
@@ -113,11 +114,29 @@ class TestSkyPilotClusterOperator:
             operator.execute({})
         mock_super_execute.assert_called_once()
 
-        expected_op_args = [
-            '/test/path', 'test.sky.yaml', None, mock_credentials, {},
-            'http://test-api-server'
-        ]
-        assert operator.op_args == expected_op_args
+        expected_op_kwargs = {
+            'yaml_file': '/test/path/test.sky.yaml',
+            'name': None,
+            'credentials': mock_credentials,
+            'envs_override': {},
+            'api_server_endpoint': 'http://test-api-server'
+        }
+        assert operator.op_kwargs == expected_op_kwargs
+
+    @patch('skypilot_provider.operators.cluster.Variable.get')
+    @patch(
+        'skypilot_provider.operators.cluster.PythonVirtualenvOperator.execute')
+    def test_execute_with_name(self, mock_super_execute, mock_variable_get,
+                               basic_operator_kwargs, mock_credentials):
+        mock_variable_get.return_value = 'http://test-api-server'
+        operator = SkyPilotClusterOperator(name='my-cluster',
+                                           **basic_operator_kwargs)
+        with patch.object(operator,
+                          '_get_credentials',
+                          return_value=mock_credentials):
+            operator.execute({})
+        mock_super_execute.assert_called_once()
+        assert operator.op_kwargs['name'] == 'my-cluster'
 
     def test_get_credentials_no_override(self, basic_operator_kwargs):
         operator = SkyPilotClusterOperator(**basic_operator_kwargs)
