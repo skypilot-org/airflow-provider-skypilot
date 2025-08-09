@@ -61,9 +61,8 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
             # PythonVirtualenvOperator now uses uv by default if available,
             # so we need to use --pre, as the Azure CLI has an issue with uv.
             pip_install_options=['--pre'],
-            # We had an issue with the latest (prerelease) version of httpx,
-            # so pinning it to the latest stable version for now.
-            requirements=[skypilot_requirement, 'httpx<=0.28.1'],
+            # There are breaking changes in the prerelease version of httpx 1.0.0.
+            requirements=[skypilot_requirement, 'httpx<1.0.0'],
             python_version='3.11',
             **kwargs,
         )

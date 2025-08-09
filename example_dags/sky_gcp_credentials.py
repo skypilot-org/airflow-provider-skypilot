@@ -11,10 +11,7 @@ default_args = {
 
 
 @decorators.dag(default_args=default_args,
-                start_date=datetime.datetime(2025,
-                                             1,
-                                             1,
-                                             tzinfo=datetime.timezone.utc),
+                start_date=datetime.datetime(2025, 1, 1),
                 catchup=False,
                 tags=["skypilot"])
 def sky_gcp_credentials():
