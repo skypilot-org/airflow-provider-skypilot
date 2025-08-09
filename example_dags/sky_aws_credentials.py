@@ -1,4 +1,5 @@
-import pendulum
+import datetime
+
 from airflow import decorators
 
 from skypilot_provider import operators
@@ -10,7 +11,10 @@ default_args = {
 
 
 @decorators.dag(default_args=default_args,
-                start_date=pendulum.datetime(2023, 1, 1),
+                start_date=datetime.datetime(2025,
+                                             1,
+                                             1,
+                                             tzinfo=datetime.timezone.utc),
                 catchup=False,
                 tags=["skypilot"])
 def sky_aws_credentials():
