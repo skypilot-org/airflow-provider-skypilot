@@ -1,0 +1,45 @@
+# Ensure this configuration aligns with format.sh and requirements-dev.txt
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.12.0  # Match the version from requirements-dev.txt
+    hooks:
+    -   id: isort
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.4.0  # Match the version from requirements-dev.txt
+    hooks:
+    -   id: mypy
+        files: ^skypilot_provider/
+        additional_dependencies:
+            - types-setuptools
+            - types-PyYAML
+            - apache-airflow>=2.6.0
+
+-   repo: https://github.com/google/yapf
+    rev: v0.32.0  # Match the version from requirements-dev.txt
+    hooks:
+    -   id: yapf
+        args: ['--recursive', '--parallel', '--in-place']
+        additional_dependencies: [toml==0.10.2] # Match the version from requirements-dev.txt
+
+-   repo: https://github.com/pylint-dev/pylint
+    rev: v2.14.5  # Match the version from requirements-dev.txt
+    hooks:
+    -   id: pylint
+        files: ^skypilot_provider/
+        additional_dependencies:
+            - pylint-quotes==0.2.3  # Match the version from requirements-dev.txt
+            - apache-airflow>=2.6.0
+        args:
+            - --load-plugins=pylint_quotes
+            # Only warn for now
+            - --exit-zero

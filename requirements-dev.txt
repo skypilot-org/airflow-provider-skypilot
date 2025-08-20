@@ -1,0 +1,22 @@
+# formatting
+# match the version with .pre-commit-config.yaml
+yapf==0.32.0
+# match the version with .pre-commit-config.yaml
+pylint==2.14.5
+# https://github.com/edaniszewski/pylint-quotes
+# match the version with .pre-commit-config.yaml
+pylint-quotes==0.2.3
+# match the version with .pre-commit-config.yaml
+toml==0.10.2
+# match the version with .pre-commit-config.yaml
+isort==5.12.0
+
+# type checking
+# match the version with .pre-commit-config.yaml
+mypy==1.4.0
+
+# testing
+pytest
+pytest-xdist
+pytest-env>=0.6
+pytest-asyncio

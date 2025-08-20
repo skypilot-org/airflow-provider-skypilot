@@ -1,0 +1,63 @@
+[build-system]
+requires = [
+    'setuptools',
+    'wheel'
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'airflow-provider-skypilot'
+
+license = { text = "Apache License 2.0" }
+description = 'An Apache Airflow provider for SkyPilot'
+keywords = [
+    'airflow',
+    'skypilot',
+]
+classifiers = [
+    'Framework :: Apache Airflow',
+    'Framework :: Apache Airflow :: Provider',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Operating System :: OS Independent',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: System :: Distributed Computing',
+]
+dynamic = [
+    'version'
+]
+requires-python = '>=3.8'
+dependencies = [
+    'apache-airflow>=2.10.0',
+    'apache-airflow-providers-google>=10.0.0',
+    'apache-airflow-providers-amazon>=8.0.0',
+    'apache-airflow-providers-standard'
+]
+
+[project.urls]
+Source = 'https://github.com/skypilot-org/airflow-provider-skypilot/'
+Documentation = 'https://docs.skypilot.co/'
+
+[project.readme]
+file = 'README.md'
+content-type = 'text/markdown'
+
+[project.entry-points.apache_airflow_provider]
+provider_info = 'skypilot_provider.__init__:get_provider_info'
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = { attr = 'skypilot_provider.__version__' }
+
+[tool.setuptools.packages.find]
+exclude = [
+    '*tests.*',
+    '*tests'
+]
