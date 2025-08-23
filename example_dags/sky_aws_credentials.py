@@ -18,7 +18,7 @@ def sky_aws_credentials():
     aws_task = operators.SkyPilotClusterOperator(
         task_id="aws_task",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/init/example_skypilot_yamls/aws.sky.yaml",
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/example_skypilot_yamls/aws.sky.yaml",
         credentials_override={"aws": "skypilot_aws_task"})
 
     aws_task
