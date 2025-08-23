@@ -18,7 +18,7 @@ def sky_gcp_credentials():
     gcp_task = operators.SkyPilotClusterOperator(
         task_id="gcp_task",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/init/example_skypilot_yamls/gcp.sky.yaml",
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/example_skypilot_yamls/gcp.sky.yaml",
         credentials_override={"gcp": "skypilot_gcp_task"})
 
     gcp_task
