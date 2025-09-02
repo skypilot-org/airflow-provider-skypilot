@@ -1,0 +1,37 @@
+resources:
+  cpus: 2+
+
+envs:
+  BUCKET_NAME: sky-demo-data-test
+  BUCKET_STORE_TYPE: s3
+  YEAR: 2025
+
+file_mounts:
+  /bucket:
+    name: $BUCKET_NAME
+    store: $BUCKET_STORE_TYPE
+
+setup: |
+  echo "Downloading dependencies..."
+  curl https://install.duckdb.org | sh
+  echo "Testing DuckDB installation..."
+  duckdb -c "SELECT 1;"
+
+  echo "Downloading ${YEAR} data..."
+  mkdir ~/data
+  for month in {01..12}; do
+    # Source: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+    URL=https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_${YEAR}-${month}.parquet
+    echo "Downloading $URL..."
+    FILE_PATH=~/data/data_${YEAR}-${month}.parquet
+    HTTP_CODE=$(curl -L -w "%{http_code}" -o $FILE_PATH $URL)
+    if [ "$HTTP_CODE" != "200" ]; then
+      echo "Download failed with HTTP code $HTTP_CODE, deleting $FILE_PATH"
+      rm -f $FILE_PATH
+    fi &
+  done
+  wait
+
+run: |
+  echo "Processing data..."
+  duckdb -c "COPY (SELECT SUM(total_amount), COUNT(total_amount) FROM read_parquet('~/data/data_${YEAR}-*.parquet')) TO '/bucket/tmp_${YEAR}.txt';"
