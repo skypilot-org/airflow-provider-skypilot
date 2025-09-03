@@ -8,7 +8,7 @@ from airflow.providers.google.cloud.hooks import gcs
 
 from skypilot_provider import operators
 
-YEARS = [year for year in range(2015, 2026)]
+YEARS = [year for year in range(2009, 2026)]
 
 default_args = {
     "owner": "airflow",
@@ -48,6 +48,8 @@ def create_parallel_task_configs(bucket_uuid: str):
 @decorators.task
 def calculate_average(bucket_name, storage_type='s3'):
     """Read all temporary files from cloud storage (S3 or GCS) and calculate the overall average."""
+    total_sum = 0
+    total_count = 0
     if storage_type.lower() == 's3':
         s3_hook = s3.S3Hook(aws_conn_id='skypilot_aws_task')
         file_keys = s3_hook.list_keys(bucket_name=bucket_name, prefix='tmp_')
@@ -57,7 +59,9 @@ def calculate_average(bucket_name, storage_type='s3'):
         for file_key in file_keys:
             print(f"Processing file: {file_key}")
             content = s3_hook.read_key(key=file_key, bucket_name=bucket_name)
-            total_sum, total_count = _process_file_content(content, file_key)
+            file_sum, file_count = _process_file_content(content, file_key)
+            total_sum += file_sum
+            total_count += file_count
 
     elif storage_type.lower() == 'gcs':
         gcs_hook = gcs.GCSHook(gcp_conn_id='skypilot_gcp_task')
@@ -69,8 +73,10 @@ def calculate_average(bucket_name, storage_type='s3'):
             print(f"Processing file: {file_key}")
             content = gcs_hook.download(bucket_name=bucket_name,
                                         object_name=file_key)
-            total_sum, total_count = _process_file_content(
+            file_sum, file_count = _process_file_content(
                 content.decode('utf-8'), file_key)
+            total_sum += file_sum
+            total_count += file_count
     else:
         raise ValueError(
             f"Unsupported storage type: {storage_type}. Supported types are 's3' and 'gcs'"
