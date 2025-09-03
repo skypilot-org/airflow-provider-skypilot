@@ -4,6 +4,7 @@ resources:
 envs:
   BUCKET_NAME: sky-demo-data-test
   BUCKET_STORE_TYPE: s3
+  DATA_URLS: ''
   YEAR: 2025
 
 file_mounts:
@@ -19,11 +20,10 @@ setup: |
 
   echo "Downloading ${YEAR} data..."
   mkdir ~/data
-  for month in {01..12}; do
-    # Source: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
-    URL=https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_${YEAR}-${month}.parquet
+  IFS=',' read -ra URLS <<< "$DATA_URLS"
+  for URL in "${URLS[@]}"; do
     echo "Downloading $URL..."
-    FILE_PATH=~/data/data_${YEAR}-${month}.parquet
+    FILE_PATH=~/data/$(basename $URL)
     HTTP_CODE=$(curl -L -w "%{http_code}" -o $FILE_PATH $URL)
     if [ "$HTTP_CODE" != "200" ]; then
       echo "Download failed with HTTP code $HTTP_CODE, deleting $FILE_PATH"
@@ -34,4 +34,4 @@ setup: |
 
 run: |
   echo "Processing data..."
-  duckdb -c "COPY (SELECT SUM(total_amount), COUNT(total_amount) FROM read_parquet('~/data/data_${YEAR}-*.parquet')) TO '/bucket/tmp_${YEAR}.txt';"
+  duckdb -c "COPY (SELECT SUM(total_amount), COUNT(total_amount) FROM read_parquet('~/data/*.parquet')) TO '/bucket/tmp_${YEAR}.txt';"
