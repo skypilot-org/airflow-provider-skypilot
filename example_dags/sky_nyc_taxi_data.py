@@ -3,8 +3,8 @@ import uuid
 
 from airflow import decorators
 from airflow.models import param
-from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from airflow.providers.amazon.aws.hooks import s3
+from airflow.providers.google.cloud.hooks import gcs
 
 from skypilot_provider import operators
 
@@ -49,7 +49,7 @@ def create_parallel_task_configs(bucket_uuid: str):
 def calculate_average(bucket_name, storage_type='s3'):
     """Read all temporary files from cloud storage (S3 or GCS) and calculate the overall average."""
     if storage_type.lower() == 's3':
-        s3_hook = S3Hook(aws_conn_id='skypilot_aws_task')
+        s3_hook = s3.S3Hook(aws_conn_id='skypilot_aws_task')
         file_keys = s3_hook.list_keys(bucket_name=bucket_name, prefix='tmp_')
         if not file_keys:
             raise ValueError(
@@ -60,7 +60,7 @@ def calculate_average(bucket_name, storage_type='s3'):
             total_sum, total_count = _process_file_content(content, file_key)
 
     elif storage_type.lower() == 'gcs':
-        gcs_hook = GCSHook(gcp_conn_id='skypilot_gcp_task')
+        gcs_hook = gcs.GCSHook(gcp_conn_id='skypilot_gcp_task')
         file_keys = gcs_hook.list(bucket_name=bucket_name, prefix='tmp_')
         if not file_keys:
             raise ValueError(
