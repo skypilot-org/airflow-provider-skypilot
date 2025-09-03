@@ -24,7 +24,7 @@ More operators like `SkyJobOperator` are in the roadmap, so stay tuned for that 
 
 ## Installation
 
-You can install this package on top of an existing Airflow deployment via `pip install airflow-provider-skypilot`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
+You can install this package on top of an existing Airflow deployment via `pip install git+https://github.com/skypilot-org/airflow-provider-skypilot.git@v0.1.0`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
 
 You should be able to see `airflow-provider-skypilot` on the Providers page
 upon successful installation.
@@ -86,7 +86,7 @@ upon successful installation.
     sky_training_workflow()
     ```
 
-See `example_dags/` for more examples.
+See [example_dags/](example_dags/README.md) for more examples and instructions on how to run them.
 
 ## Managing SkyPilot Version
 
