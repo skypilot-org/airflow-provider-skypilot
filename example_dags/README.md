@@ -51,7 +51,9 @@ based on Airflow's official [guide](https://airflow.apache.org/docs/apache-airfl
 
 5. The Airflow API server should now be available at http://localhost:8080. By default, the account created has the username `airflow` and the password `airflow`.
 
-<img alt="Airflow login page" src="https://i.imgur.com/PVIgNBc.png" width="720">
+<p align="center">
+    <img alt="Airflow login page" src="https://i.imgur.com/PVIgNBc.png" width="720">
+</p>
 
 ## Triggering the DAG
 
@@ -60,20 +62,28 @@ to trigger the DAG run:
 
 1. Go to the DAGs [page](http://localhost:8080/dags?tags=skypilot) and filter with `tags=skypilot`
 
-<img alt="Airflow DAGs page" src="https://i.imgur.com/HvZbPlF.png" width="720">
+<p align="center">
+    <img alt="Airflow DAGs page" src="https://i.imgur.com/HvZbPlF.png" width="720">
+</p>
 
 2. Press the <span>&#9654;</span> (trigger) button on the right
 
 3. Some example DAGs which interact with object storage allow you to choose between using S3 or GCS
 
-<img alt="Airflow DAG trigger modal" src="https://i.imgur.com/Fs6IcVl.png" width="720">
+<p align="center">
+    <img alt="Airflow DAG trigger modal" src="https://i.imgur.com/Fs6IcVl.png" width="720">
+</p>
 
 4. Click on "Trigger"
 
 5. Click on the DAG name to go to the detailed page, for example http://localhost:8080/dags/sky_nyc_taxi_data
 
-<img alt="Airflow DAG detail page" src="https://i.imgur.com/uhbwy2S.png" width="720">
-<img alt="Airflow DAG run page" src="https://i.imgur.com/KzEQflK.png" width="720">
+<p align="center">
+    <img alt="Airflow DAG detail page" src="https://i.imgur.com/uhbwy2S.png" width="720">
+</p>
+<p align="center">
+    <img alt="Airflow DAG run page" src="https://i.imgur.com/KzEQflK.png" width="720">
+</p>
 
 ## (Optional) Cleaning up the Docker Compose environment
 
