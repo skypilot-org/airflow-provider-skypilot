@@ -35,7 +35,7 @@ def create_parallel_task_configs(bucket_uuid: str):
                 # Source: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
                 'DATA_URLS':
                 ','.join([
-                    f'https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month}.parquet'
+                    f'https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month:02d}.parquet'
                     for month in range(1, 13)
                 ]),
                 'YEAR':
