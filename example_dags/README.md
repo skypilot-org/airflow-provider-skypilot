@@ -7,7 +7,7 @@ This directory contains several example Airflow DAGs to demonstrate how to use t
 * [Overview](#overview)
   + [Example 1: NYC Taxi Data Processing Pipeline](#example-1-nyc-taxi-data-processing-pipeline)
   + [Example 2: Machine Learning Training Pipeline](#example-2-machine-learning-training-pipeline)
-  + [Example 3: Simple Hello World](#example-3-simple-hello-world)
+  + [Example 3: Hello World](#example-3-hello-world)
   + [Example 4: Local Hello World](#example-4-local-hello-world)
   + [Example 5: AWS Credentials Integration](#example-5-aws-credentials-integration)
   + [Example 6: GCP Credentials Integration](#example-6-gcp-credentials-integration)
@@ -35,7 +35,7 @@ This directory contains several example Airflow DAGs to demonstrate how to use t
 2. **Model Training Stage**: Trains a machine learning model using the preprocessed data
 3. **Model Evaluation Stage**: Evaluates the trained model's performance and generates metrics
 
-### Example 3: Simple Hello World
+### Example 3: Hello World
 
 [sky_hello.py](sky_hello.py) includes the definition of the DAG. This is the simplest example that demonstrates basic SkyPilot integration. It involves the following stage:
 
