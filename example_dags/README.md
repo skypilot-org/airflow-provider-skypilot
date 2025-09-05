@@ -3,11 +3,55 @@
 This directory contains several example Airflow DAGs to demonstrate how to use the
 `SkyPilotClusterOperator`.
 
+## Overview
+
+### Example 1: NYC Taxi Data Processing Pipeline
+
+[sky_nyc_taxi_data.py](sky_nyc_taxi_data.py) includes the definition of the DAG. This example demonstrates a large-scale data processing workflow that processes NYC taxi trip data from 2009-2025. It involves the following stages:
+
+1. **Preprocessing Stage**: Generates a unique bucket UUID and creates parallel task configurations for processing multiple years of data in parallel
+2. **Parallel Data Processing Stage**: In parallel, downloads NYC taxi trip data (parquet files) from the NYC TLC website for each year, processes the data using DuckDB to calculate sum and count of total amounts, and stores intermediate results in cloud storage (S3 or GCS)
+3. **Data Aggregation Stage**: Reads all intermediate results from cloud storage and calculates the overall average taxi fare across all years and trips
+
+### Example 2: Machine Learning Training Pipeline
+
+[sky_train.py](sky_train.py) includes the definition of the DAG. This example demonstrates a complete mock ML training workflow. It involves the following stages:
+
+1. **Data Preprocessing Stage**: Prepares and cleans raw data for training using a dedicated preprocessing task
+2. **Model Training Stage**: Trains a machine learning model using the preprocessed data
+3. **Model Evaluation Stage**: Evaluates the trained model's performance and generates metrics
+
+### Example 3: Simple Hello World
+
+[sky_hello.py](sky_hello.py) includes the definition of the DAG. This is the simplest example that demonstrates basic SkyPilot integration. It involves the following stage:
+
+1. **Hello Task**: Executes a simple `echo "Hello, SkyPilot!"` command and displays the conda environment list to verify the cluster setup
+
+### Example 4: Local Hello World
+
+[sky_hello_local.py](sky_hello_local.py) includes the definition of the DAG. This example is similar to the simple hello world but uses local YAML files instead of remote ones. It involves the following stage:
+
+1. **Hello Task**: Executes a simple `echo "Hello, SkyPilot!"` command using a locally mounted YAML file
+
+### Example 5: AWS Credentials Integration
+
+[sky_aws_credentials.py](sky_aws_credentials.py) includes the definition of the DAG. This example demonstrates how to use AWS credentials stored in Airflow connections with SkyPilot tasks. It involves the following stage:
+
+1. **AWS Integration Task**: Sets up AWS CLI, authenticates using provided credentials, and displays the current AWS identity to verify proper credential configuration
+
+### Example 6: GCP Credentials Integration
+
+[sky_gcp_credentials.py](sky_gcp_credentials.py) includes the definition of the DAG. This example demonstrates how to use Google Cloud Platform credentials stored in Airflow connections with SkyPilot tasks. It involves the following stage:
+
+1. **GCP Integration Task**: Sets up Google Cloud SDK, authenticates using provided credentials, and displays the current GCP identity to verify proper credential configuration
+
+## Running the Examples
+
 To run these examples, you need:
 1. A SkyPilot remote API server (see [Configuration and Usage](../README.md#configuration-and-usage))
 2. An Airflow deployment
 3. An extended Airflow image which has `airflow-provider-skypilot` installed (along with other
-additional dependencies you may have)
+additional dependencies you may have). Refer to our [Dockerfile](../Dockerfile) for how to create the extended image.
 
 If you already have an existing Airflow deployment, and have added `airflow-provider-skypilot` to your custom Airflow image, you can jump ahead to [Triggering the DAG](#triggering-the-dag).
 
@@ -63,7 +107,7 @@ to trigger the DAG run:
 1. Go to the DAGs [page](http://localhost:8080/dags?tags=skypilot) and filter with `tags=skypilot`
 
 <p align="center">
-    <img alt="Airflow DAGs page" src="https://i.imgur.com/HvZbPlF.png" width="720">
+    <img alt="Airflow DAGs page" src="https://i.imgur.com/xpdyDre.png" width="720">
 </p>
 
 2. Press the <span>&#9654;</span> (trigger) button on the right
