@@ -12,9 +12,9 @@ This directory contains several example Airflow DAGs to demonstrate how to use t
   + [Example 5: AWS Credentials Integration](#example-5-aws-credentials-integration)
   + [Example 6: GCP Credentials Integration](#example-6-gcp-credentials-integration)
 * [Running the Examples](#running-the-examples)
-* [(Optional) Setting up Airflow locally using a custom image](#-optional--setting-up-airflow-locally-using-a-custom-image)
+* [(Optional) Setting up Airflow locally using a custom image](#optional-setting-up-airflow-locally-using-a-custom-image)
 * [Triggering the DAG](#triggering-the-dag)
-* [(Optional) Cleaning up the Docker Compose environment](#-optional--cleaning-up-the-docker-compose-environment)
+* [(Optional) Cleaning up the Docker Compose environment](#optional-cleaning-up-the-docker-compose-environment)
 * [References](#references)
 
 ## Overview
