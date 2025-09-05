@@ -3,6 +3,20 @@
 This directory contains several example Airflow DAGs to demonstrate how to use the
 `SkyPilotClusterOperator`.
 
+## Table of Contents
+* [Overview](#overview)
+  + [Example 1: NYC Taxi Data Processing Pipeline](#example-1-nyc-taxi-data-processing-pipeline)
+  + [Example 2: Machine Learning Training Pipeline](#example-2-machine-learning-training-pipeline)
+  + [Example 3: Simple Hello World](#example-3-simple-hello-world)
+  + [Example 4: Local Hello World](#example-4-local-hello-world)
+  + [Example 5: AWS Credentials Integration](#example-5-aws-credentials-integration)
+  + [Example 6: GCP Credentials Integration](#example-6-gcp-credentials-integration)
+* [Running the Examples](#running-the-examples)
+* [(Optional) Setting up Airflow locally using a custom image](#-optional--setting-up-airflow-locally-using-a-custom-image)
+* [Triggering the DAG](#triggering-the-dag)
+* [(Optional) Cleaning up the Docker Compose environment](#-optional--cleaning-up-the-docker-compose-environment)
+* [References](#references)
+
 ## Overview
 
 ### Example 1: NYC Taxi Data Processing Pipeline
