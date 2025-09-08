@@ -86,7 +86,13 @@ upon successful installation.
     sky_training_workflow()
     ```
 
-See [example_dags/](example_dags/README.md) for more examples and instructions on how to run them.
+## Examples
+
+We put up some additional examples in [examples_dags/](example_dags/), including:
+
+1. Parallel data processing pipeline: [NYC taxi data processing](example_dags/README.md#example-1-nyc-taxi-data-processing-pipeline)
+2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](example_dags/README.md#example-2-machine-learning-training-pipeline)
+3. Cloud credentials integration: [AWS credentials integration](example_dags/README.md#example-5-aws-credentials-integration), [GCP credentials integration](example_dags/README.md#example-6-gcp-credentials-integration)
 
 ## Managing SkyPilot Version
 
