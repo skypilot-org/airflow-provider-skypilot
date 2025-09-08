@@ -135,7 +135,7 @@ def sky_nyc_taxi_data():
     nyc_taxi_data_tasks = operators.SkyPilotClusterOperator.partial(
         task_id="nyc_taxi_data",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/examples/example_skypilot_yamls/nyc_taxi_data.sky.yaml",
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/example_skypilot_yamls/nyc_taxi_data.sky.yaml",
         retry_delay=datetime.timedelta(seconds=10),
     ).expand_kwargs(task_configs)
 
