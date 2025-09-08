@@ -19,7 +19,7 @@ def sky_hello():
         task_id="hello_task",
         name="mycluster",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/init/example_skypilot_yamls/hello.sky.yaml",
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/example_skypilot_yamls/hello.sky.yaml",
     )
 
     hello_task

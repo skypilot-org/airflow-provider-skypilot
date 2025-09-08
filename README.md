@@ -24,7 +24,7 @@ More operators like `SkyJobOperator` are in the roadmap, so stay tuned for that 
 
 ## Installation
 
-You can install this package on top of an existing Airflow deployment via `pip install airflow-provider-skypilot`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
+You can install this package on top of an existing Airflow deployment via `pip install git+https://github.com/skypilot-org/airflow-provider-skypilot.git@v0.1.0`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
 
 You should be able to see `airflow-provider-skypilot` on the Providers page
 upon successful installation.
@@ -86,7 +86,13 @@ upon successful installation.
     sky_training_workflow()
     ```
 
-See `example_dags/` for more examples.
+## Examples
+
+We put up some additional examples in [examples_dags/](example_dags/), including:
+
+1. Parallel data processing pipeline: [NYC taxi data processing](example_dags/README.md#example-1-nyc-taxi-data-processing-pipeline)
+2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](example_dags/README.md#example-2-machine-learning-training-pipeline)
+3. Cloud credentials integration: [AWS credentials integration](example_dags/README.md#example-5-aws-credentials-integration), [GCP credentials integration](example_dags/README.md#example-6-gcp-credentials-integration)
 
 ## Managing SkyPilot Version
 
