@@ -1,0 +1,10 @@
+workdir:
+  url: https://github.com/skypilot-org/skypilot.git
+  ref: main
+
+resources:
+  cpus: 1+
+
+run: |
+  ls -la
+  cat README.md | grep 'SkyPilot is a '
