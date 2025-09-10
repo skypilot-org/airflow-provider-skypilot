@@ -1,6 +1,6 @@
 workdir:
   url: https://github.com/skypilot-org/skypilot.git
-  ref: main
+  ref: master
 
 resources:
   cpus: 1+
