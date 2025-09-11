@@ -1,5 +1,7 @@
 workdir:
-  url: https://github.com/skypilot-org/skypilot.git
+  # Specify SKYPILOT_GIT_SSH_KEY_PATH or SKYPILOT_GIT_TOKEN in Airflow Variables
+  # to be able to access private repositories
+  url: git@github.com:skypilot-org/skypilot.git # or https://github.com/skypilot-org/skypilot.git
   ref: master
 
 resources:
