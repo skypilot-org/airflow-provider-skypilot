@@ -43,7 +43,7 @@ upon successful installation.
         <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="720">
     </p>
 
-3. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
+3. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG
 
     ```python
     from skypilot_provider.operators import SkyPilotClusterOperator
@@ -171,6 +171,9 @@ For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.
   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`.
   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`.
 
+    <p align="center">
+        <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
+    </p>
 
 ## Requirements
 
