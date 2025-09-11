@@ -168,8 +168,8 @@ For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.
     ```
 
 2. Set these Airflow Variables to enable authentication for private repos:
-  - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`.
-  - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`.
+   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`.
+   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`.
 
     <p align="center">
         <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
