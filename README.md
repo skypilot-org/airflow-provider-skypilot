@@ -99,7 +99,7 @@ We put up some additional examples in [examples_dags/](example_dags/), including
 
 All operators support both stable and nightly versions of SkyPilot.
 
-- **Default**: Uses the latest nightly version (`skypilot-nightly[all]`). We recommend pinning to a stable version in production.
+- **Default**: Uses the latest nightly version (`skypilot-nightly[all]`). We recommend pinning to a stable version in production
   ```python
   SkyPilotClusterOperator(
       task_id="my_task",  # defaults to skypilot-nightly[all]
@@ -133,7 +133,7 @@ If you have resources that is not accessible with the cloud credentials on the A
 you can use a different cloud credential to grant the remote clusters created by the operator access to those resources.
 
 1. Create connections in Airflow to store your cloud credentials. Today, we support [AWS](https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/connections/aws.html)
-and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) connections.
+and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) connections
     <p align="center">
         <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="720">
     </p>
@@ -168,8 +168,8 @@ For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.
     ```
 
 2. Set these Airflow Variables to enable authentication for private repos:
-   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`.
-   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`.
+   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`
+   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`
 
     <p align="center">
         <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
