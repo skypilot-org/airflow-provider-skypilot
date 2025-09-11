@@ -68,7 +68,7 @@ class TestSkyPilotClusterOperator:
         assert operator.name == 'my-cluster'
 
     @pytest.mark.parametrize("skypilot_version,expected_requirement", [
-        (None, 'skypilot[all]'),
+        (None, 'skypilot-nightly[all]'),
         ('0.10.0', 'skypilot[all]==0.10.0'),
         ('1.0.0.dev20250808', 'skypilot-nightly[all]==1.0.0.dev20250808'),
     ])
@@ -105,7 +105,13 @@ class TestSkyPilotClusterOperator:
         'skypilot_provider.operators.cluster.PythonVirtualenvOperator.execute')
     def test_execute_success(self, mock_super_execute, mock_variable_get,
                              basic_operator_kwargs, mock_credentials):
-        mock_variable_get.return_value = 'http://test-api-server'
+
+        def mock_get(key, default=None):
+            if key == 'SKYPILOT_API_SERVER_ENDPOINT':
+                return 'http://test-api-server'
+            return default
+
+        mock_variable_get.side_effect = mock_get
 
         operator = SkyPilotClusterOperator(**basic_operator_kwargs)
         with patch.object(operator,
@@ -119,7 +125,9 @@ class TestSkyPilotClusterOperator:
             'name': None,
             'credentials': mock_credentials,
             'envs_override': {},
-            'api_server_endpoint': 'http://test-api-server'
+            'os_environ': {
+                'SKYPILOT_API_SERVER_ENDPOINT': 'http://test-api-server'
+            }
         }
         assert operator.op_kwargs == expected_op_kwargs
 
@@ -190,3 +198,113 @@ class TestSkyPilotClusterOperator:
             }
         }
         assert credentials == expected
+
+    @patch('skypilot_provider.operators.cluster.Variable.get')
+    @patch(
+        'skypilot_provider.operators.cluster.PythonVirtualenvOperator.execute')
+    def test_execute_with_git_ssh_key_path(self, mock_super_execute,
+                                           mock_variable_get,
+                                           basic_operator_kwargs,
+                                           mock_credentials):
+
+        def mock_get(key, default=None):
+            if key == 'SKYPILOT_API_SERVER_ENDPOINT':
+                return 'http://test-api-server'
+            elif key == 'SKYPILOT_GIT_SSH_KEY_PATH':
+                return '/path/to/ssh/key'
+            return default
+
+        mock_variable_get.side_effect = mock_get
+
+        operator = SkyPilotClusterOperator(**basic_operator_kwargs)
+        with patch.object(operator,
+                          '_get_credentials',
+                          return_value=mock_credentials):
+            operator.execute({})
+        mock_super_execute.assert_called_once()
+
+        expected_op_kwargs = {
+            'yaml_file': '/test/path/test.sky.yaml',
+            'name': None,
+            'credentials': mock_credentials,
+            'envs_override': {},
+            'os_environ': {
+                'SKYPILOT_API_SERVER_ENDPOINT': 'http://test-api-server',
+                'GIT_SSH_KEY_PATH': '/path/to/ssh/key'
+            }
+        }
+        assert operator.op_kwargs == expected_op_kwargs
+
+    @patch('skypilot_provider.operators.cluster.Variable.get')
+    @patch(
+        'skypilot_provider.operators.cluster.PythonVirtualenvOperator.execute')
+    def test_execute_with_git_token(self, mock_super_execute,
+                                    mock_variable_get, basic_operator_kwargs,
+                                    mock_credentials):
+
+        def mock_get(key, default=None):
+            if key == 'SKYPILOT_API_SERVER_ENDPOINT':
+                return 'http://test-api-server'
+            elif key == 'SKYPILOT_GIT_TOKEN':
+                return 'github_token_123'
+            return default
+
+        mock_variable_get.side_effect = mock_get
+
+        operator = SkyPilotClusterOperator(**basic_operator_kwargs)
+        with patch.object(operator,
+                          '_get_credentials',
+                          return_value=mock_credentials):
+            operator.execute({})
+        mock_super_execute.assert_called_once()
+
+        expected_op_kwargs = {
+            'yaml_file': '/test/path/test.sky.yaml',
+            'name': None,
+            'credentials': mock_credentials,
+            'envs_override': {},
+            'os_environ': {
+                'SKYPILOT_API_SERVER_ENDPOINT': 'http://test-api-server',
+                'GIT_TOKEN': 'github_token_123'
+            }
+        }
+        assert operator.op_kwargs == expected_op_kwargs
+
+    @patch('skypilot_provider.operators.cluster.Variable.get')
+    @patch(
+        'skypilot_provider.operators.cluster.PythonVirtualenvOperator.execute')
+    def test_execute_with_all_git_env_vars(self, mock_super_execute,
+                                           mock_variable_get,
+                                           basic_operator_kwargs,
+                                           mock_credentials):
+
+        def mock_get(key, default=None):
+            if key == 'SKYPILOT_API_SERVER_ENDPOINT':
+                return 'http://test-api-server'
+            elif key == 'SKYPILOT_GIT_SSH_KEY_PATH':
+                return '/path/to/ssh/key'
+            elif key == 'SKYPILOT_GIT_TOKEN':
+                return 'github_token_123'
+            return default
+
+        mock_variable_get.side_effect = mock_get
+
+        operator = SkyPilotClusterOperator(**basic_operator_kwargs)
+        with patch.object(operator,
+                          '_get_credentials',
+                          return_value=mock_credentials):
+            operator.execute({})
+        mock_super_execute.assert_called_once()
+
+        expected_op_kwargs = {
+            'yaml_file': '/test/path/test.sky.yaml',
+            'name': None,
+            'credentials': mock_credentials,
+            'envs_override': {},
+            'os_environ': {
+                'SKYPILOT_API_SERVER_ENDPOINT': 'http://test-api-server',
+                'GIT_SSH_KEY_PATH': '/path/to/ssh/key',
+                'GIT_TOKEN': 'github_token_123'
+            }
+        }
+        assert operator.op_kwargs == expected_op_kwargs
