@@ -14,6 +14,13 @@ else:
 from .credentials_utils import (CREDENTIAL_HANDLERS, ClusterCredentials,
                                 CredentialsOverride)
 
+SKYPILOT_ENVIRONMENT_VARIABLES = [
+    # (Airflow variable name, SkyPilot environment variable name, required)
+    ('SKYPILOT_API_SERVER_ENDPOINT', 'SKYPILOT_API_SERVER_ENDPOINT', True),
+    ('SKYPILOT_GIT_SSH_KEY_PATH', 'GIT_SSH_KEY_PATH', False),
+    ('SKYPILOT_GIT_TOKEN', 'GIT_TOKEN', False),
+]
+
 
 class SkyPilotClusterOperator(PythonVirtualenvOperator):
     """
@@ -51,7 +58,7 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
             raise ValueError('name must be a non-empty string')
 
         if skypilot_version is None:
-            skypilot_requirement = 'skypilot[all]'
+            skypilot_requirement = 'skypilot-nightly[all]'
         elif 'dev' in skypilot_version:
             skypilot_requirement = f'skypilot-nightly[all]=={skypilot_version}'
         else:
@@ -74,10 +81,16 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
         self.skypilot_version = skypilot_version
 
     def execute(self, context):
-        api_server_endpoint = Variable.get('SKYPILOT_API_SERVER_ENDPOINT')
-        if not api_server_endpoint:
-            raise AirflowException(
-                'SKYPILOT_API_SERVER_ENDPOINT Variable is not set')
+        os_environ = {}
+        for airflow_variable_name, skypilot_variable_name, required in (
+                SKYPILOT_ENVIRONMENT_VARIABLES):
+            value = Variable.get(airflow_variable_name, default=None)
+            if value is None:
+                if required:
+                    raise AirflowException(
+                        f'{airflow_variable_name} Variable is not set')
+                continue
+            os_environ[skypilot_variable_name] = value
 
         # Get credentials in the main Airflow environment,
         # as it depends on Airflow providers not
@@ -89,7 +102,7 @@ class SkyPilotClusterOperator(PythonVirtualenvOperator):
             'name': self.name,
             'credentials': credentials,
             'envs_override': self.envs_override,
-            'api_server_endpoint': api_server_endpoint,
+            'os_environ': os_environ,
         }
         return super().execute(context)
 
@@ -122,7 +135,7 @@ def run_sky_task_with_credentials(
     name: Optional[str],
     credentials: ClusterCredentials,
     envs_override: Dict[str, str],
-    api_server_endpoint: str,
+    os_environ: Dict[str, str],
 ):
     import os
     import tempfile
@@ -159,7 +172,8 @@ def run_sky_task_with_credentials(
 
                 task_config['file_mounts'][dst_path] = temp_file.name
 
-            task = sky.Task.from_yaml_config(task_config)
+            task = sky.Task.from_yaml_config(
+                task_config).update_envs_and_secrets_from_workdir()
             cluster_name = (name if name is not None else
                             f'{task_name_hint}-{str(uuid.uuid4())[:4]}')
             print(f'Starting SkyPilot cluster {cluster_name}')
@@ -187,8 +201,7 @@ def run_sky_task_with_credentials(
                 except OSError:
                     pass
 
-    os.environ['SKYPILOT_API_SERVER_ENDPOINT'] = api_server_endpoint
-
+    os.environ.update(os_environ)
     cwd = os.getcwd()
     try:
         if yaml_file.startswith(('http://', 'https://')):
