@@ -151,7 +151,7 @@ and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable
     )
     ```
 
-## Optional: Using Private Git Repo for Workdir
+## Optional: Using private Git repos as workdir
 
 The operator supports syncing a Git repository as the task's working directory using `workdir` in the SkyPilot YAML file.
 For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.co/en/latest/examples/syncing-code-artifacts.html).
