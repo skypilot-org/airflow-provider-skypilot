@@ -24,7 +24,7 @@ More operators like `SkyJobOperator` are in the roadmap, so stay tuned for that 
 
 ## Installation
 
-You can install this package on top of an existing Airflow deployment via `pip install git+https://github.com/skypilot-org/airflow-provider-skypilot.git@v0.1.0`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
+You can install this package on top of an existing Airflow deployment via `pip install git+https://github.com/skypilot-org/airflow-provider-skypilot.git@v0.1.1`. For the minimum Airflow version supported, see [Requirements](#requirements) below.
 
 You should be able to see `airflow-provider-skypilot` on the Providers page
 upon successful installation.
@@ -43,7 +43,7 @@ upon successful installation.
         <img alt="Airflow variables" src="https://i.imgur.com/rr7SfFP.png" width="720">
     </p>
 
-3. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG.
+3. Import `SkyPilotClusterOperator`, and use it in your Airflow DAG
 
     ```python
     from skypilot_provider.operators import SkyPilotClusterOperator
@@ -65,19 +65,19 @@ upon successful installation.
         preprocess_task = SkyPilotClusterOperator(
             task_id="preprocess",
             yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/data_preprocessing.yaml",
-            env_vars=env_vars,
+            envs_override=env_vars,
         )
 
         train_task = SkyPilotClusterOperator(
             task_id="train",
             yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/train.yaml",
-            env_vars=env_vars,
+            envs_override=env_vars,
         )
 
         eval_task = SkyPilotClusterOperator(
             task_id="eval",
             yaml_file="https://raw.githubusercontent.com/skypilot-org/mock-train-workflow/refs/heads/main/eval.yaml",
-            env_vars=env_vars,
+            envs_override=env_vars,
         )
 
         # Define the workflow
@@ -93,15 +93,16 @@ We put up some additional examples in [examples_dags/](example_dags/), including
 1. Parallel data processing pipeline: [NYC taxi data processing](example_dags/README.md#example-1-nyc-taxi-data-processing-pipeline)
 2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](example_dags/README.md#example-2-machine-learning-training-pipeline)
 3. Cloud credentials integration: [AWS credentials integration](example_dags/README.md#example-5-aws-credentials-integration), [GCP credentials integration](example_dags/README.md#example-6-gcp-credentials-integration)
+4. Git workdir integration: [Syncing Git workdir](example_dags/README.md#example-7-git-workdir-integration)
 
 ## Managing SkyPilot Version
 
-All operators supports both stable and nightly versions of SkyPilot.
+All operators support both stable and nightly versions of SkyPilot.
 
-- **Default**: Uses the latest stable release
+- **Default**: Uses the latest nightly version (`skypilot-nightly[all]`). We recommend pinning to a stable version in production
   ```python
   SkyPilotClusterOperator(
-      task_id="my_task",  # skypilot[all] (latest stable)
+      task_id="my_task",  # defaults to skypilot-nightly[all]
       ...
   )
   ```
@@ -132,7 +133,7 @@ If you have resources that is not accessible with the cloud credentials on the A
 you can use a different cloud credential to grant the remote clusters created by the operator access to those resources.
 
 1. Create connections in Airflow to store your cloud credentials. Today, we support [AWS](https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/connections/aws.html)
-and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) connections.
+and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) connections
     <p align="center">
         <img alt="Airflow connections" src="https://i.imgur.com/9VbD44X.png" width="720">
     </p>
@@ -150,6 +151,47 @@ and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable
     )
     ```
 
+## Optional: Using Git workdir
+
+The operator supports syncing a Git repository as the task's working directory using `workdir` in the SkyPilot YAML file.
+For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.co/en/latest/examples/syncing-code-artifacts.html).
+
+1. In your SkyPilot YAML, set a Git workdir:
+
+    ```yaml
+    workdir:
+      url: git@github.com:org/repo.git   # or https://github.com/org/repo.git
+      ref: main
+    run: |
+      ls -la
+      cat README.md
+    ```
+
+2. Set these Airflow Variables to enable authentication for private repos:
+   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`
+   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`
+
+    <p align="center">
+        <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
+    </p>
+
+3. Ensure that the `SKYPILOT_GIT_SSH_KEY_PATH` points to a valid path on your
+Airflow workers. If you are using [Helm](https://artifacthub.io/packages/helm/apache-airflow/airflow) to install Airflow, you can
+set `workers.extraVolumes` and `workers.extraVolumeMounts` on your Helm values.
+For example:
+
+    ```yaml
+    workers:
+      extraVolumes:
+      - name: git-credentials
+        secret:
+          secretName: airflow-ssh-git-secret
+          defaultMode: 0400
+      extraVolumeMounts:
+      - name: git-credentials
+        mountPath: /opt/airflow/.ssh/
+        readOnly: true
+    ```
 
 ## Requirements
 

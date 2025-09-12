@@ -11,6 +11,7 @@ This directory contains several example Airflow DAGs to demonstrate how to use t
   + [Example 4: Local Hello World](#example-4-local-hello-world)
   + [Example 5: AWS Credentials Integration](#example-5-aws-credentials-integration)
   + [Example 6: GCP Credentials Integration](#example-6-gcp-credentials-integration)
+  + [Example 7: Git Workdir integration](#example-7-git-workdir-integration)
 * [Running the Examples](#running-the-examples)
 * [(Optional) Setting up Airflow locally using a custom image](#optional-setting-up-airflow-locally-using-a-custom-image)
 * [Triggering the DAG](#triggering-the-dag)
@@ -58,6 +59,14 @@ This directory contains several example Airflow DAGs to demonstrate how to use t
 [sky_gcp_credentials.py](sky_gcp_credentials.py) includes the definition of the DAG. This example demonstrates how to use Google Cloud Platform credentials stored in Airflow connections with SkyPilot tasks. It involves the following stage:
 
 1. **GCP Integration Task**: Sets up Google Cloud SDK, authenticates using provided credentials, and displays the current GCP identity to verify proper credential configuration
+
+### Example 7: Git Workdir integration
+
+[sky_git_workdir.py](sky_git_workdir.py) includes the definition of the DAG. This example
+demonstrates how to sync contents from a Git repo to a remote cluster so that you can run your code
+on the cluster.
+
+1. **Git Workdir Task**: Runs commands under the cloned Git workdir.
 
 ## Running the Examples
 
