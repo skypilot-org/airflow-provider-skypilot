@@ -12,4 +12,4 @@ RUN pip install git+https://github.com/skypilot-org/airflow-provider-skypilot.gi
 # RUN pip install -e /opt/airflow/providers/airflow-provider-skypilot/
 
 # Copy example DAGs to Airflow's DAGs directory
-COPY --chown=airflow:root example_dags/ /opt/airflow/dags/
+COPY --chown=airflow:root examples/ /opt/airflow/dags/
