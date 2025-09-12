@@ -175,6 +175,24 @@ For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.
         <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
     </p>
 
+3. Ensure that the `SKYPILOT_GIT_SSH_KEY_PATH` points to a valid path on your
+Airflow workers. If you are using [Helm](https://artifacthub.io/packages/helm/apache-airflow/airflow) to install Airflow, you can
+set `workers.extraVolumes` and `workers.extraVolumeMounts` on your Helm values.
+For example:
+
+    ```yaml
+    workers:
+      extraVolumes:
+      - name: git-credentials
+        secret:
+          secretName: airflow-ssh-git-secret
+          defaultMode: 0400
+      extraVolumeMounts:
+      - name: git-credentials
+        mountPath: /opt/airflow/.ssh/
+        readOnly: true
+    ```
+
 ## Requirements
 
 The minimum Apache Airflow version supported by this provider distribution is ``2.10.0``.
