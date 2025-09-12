@@ -92,7 +92,7 @@ We put up some additional examples under [`examples/`](examples/):
 
 1. Parallel data processing pipeline: [NYC taxi data processing](examples/nyc_taxi_data/)
 2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](examples/ml_training/)
-3. Cloud credentials integration: [AWS credentials integration](examples/aws_credentials/), [GCP credentials integration](examples/gcp-credentials/)
+3. Cloud credentials integration: [AWS credentials integration](examples/aws_credentials/), [GCP credentials integration](examples/gcp_credentials/)
 4. Git workdir integration: [Syncing Git workdir](examples/git_workdir/)
 
 ## Managing SkyPilot Version
