@@ -14,14 +14,14 @@ default_args = {
                 start_date=datetime.datetime(2025, 1, 1),
                 catchup=False,
                 tags=["skypilot"])
-def sky_gcp_credentials():
-    gcp_task = operators.SkyPilotClusterOperator(
-        task_id="gcp_task",
+def sky_git_workdir():
+    git_workdir_task = operators.SkyPilotClusterOperator(
+        task_id="git_workdir_task",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/example_skypilot_yamls/gcp.sky.yaml",
-        credentials_override={"gcp": "skypilot_gcp_task"})
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/examples/git_workdir/task.sky.yaml",
+    )
 
-    gcp_task
+    git_workdir_task
 
 
-sky_gcp_credentials()
+sky_git_workdir()

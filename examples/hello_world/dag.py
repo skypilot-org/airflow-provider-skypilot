@@ -14,14 +14,15 @@ default_args = {
                 start_date=datetime.datetime(2025, 1, 1),
                 catchup=False,
                 tags=["skypilot"])
-def sky_git_workdir():
-    git_workdir_task = operators.SkyPilotClusterOperator(
-        task_id="git_workdir_task",
+def sky_hello():
+    hello_task = operators.SkyPilotClusterOperator(
+        task_id="hello_task",
+        name="mycluster",
         yaml_file=
-        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/workdir-examples/example_skypilot_yamls/git_workdir.sky.yaml",
+        "https://raw.githubusercontent.com/skypilot-org/airflow-provider-skypilot/refs/heads/master/examples/hello_world/task.sky.yaml",
     )
 
-    git_workdir_task
+    hello_task
 
 
-sky_git_workdir()
+sky_hello()

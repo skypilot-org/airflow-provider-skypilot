@@ -17,10 +17,10 @@ default_args = {
 def sky_hello_local():
     hello_task = operators.SkyPilotClusterOperator(
         task_id="hello_task",
-        # If running locally, copy the example_skypilot_yamls/ directory into
+        # If running locally, copy the examples/ directory into
         # the airflow-worker container:
-        # docker cp ./example_skypilot_yamls/ airflow-worker:/opt/airflow/
-        yaml_file="/opt/airflow/example_skypilot_yamls/hello.sky.yaml",
+        # docker cp ./examples/ airflow-worker:/opt/airflow/
+        yaml_file="/opt/airflow/examples/hello_world_local/task.sky.yaml",
     )
 
     hello_task

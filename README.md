@@ -88,12 +88,12 @@ upon successful installation.
 
 ## Examples
 
-We put up some additional examples in [examples_dags/](example_dags/), including:
+We put up some additional examples under [`examples/`](examples/):
 
-1. Parallel data processing pipeline: [NYC taxi data processing](example_dags/README.md#example-1-nyc-taxi-data-processing-pipeline)
-2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](example_dags/README.md#example-2-machine-learning-training-pipeline)
-3. Cloud credentials integration: [AWS credentials integration](example_dags/README.md#example-5-aws-credentials-integration), [GCP credentials integration](example_dags/README.md#example-6-gcp-credentials-integration)
-4. Git workdir integration: [Syncing Git workdir](example_dags/README.md#example-7-git-workdir-integration)
+1. Parallel data processing pipeline: [NYC taxi data processing](examples/nyc-taxi-data/)
+2. Data preprocessing -> Training -> Eval pipeline: [Machine learning training](examples/ml-training/)
+3. Cloud credentials integration: [AWS credentials integration](examples/aws-credentials/), [GCP credentials integration](examples/gcp-credentials/)
+4. Git workdir integration: [Syncing Git workdir](examples/git-workdir/)
 
 ## Managing SkyPilot Version
 
@@ -151,7 +151,7 @@ and [GCP](https://airflow.apache.org/docs/apache-airflow-providers-google/stable
     )
     ```
 
-## Optional: Using Git workdir
+## Optional: Using Private Git Repo for Workdir
 
 The operator supports syncing a Git repository as the task's working directory using `workdir` in the SkyPilot YAML file.
 For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.co/en/latest/examples/syncing-code-artifacts.html).
@@ -168,8 +168,8 @@ For more details, refer to [Syncing Code, Git, and Files](https://docs.skypilot.
     ```
 
 2. Set these Airflow Variables to enable authentication for private repos:
-   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`
-   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`
+   - `SKYPILOT_GIT_SSH_KEY_PATH`: For SSH URLs like `git@github.com:org/repo.git`. If you are using GitHub, refer to [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for more details on how to generate an SSH key.
+   - `SKYPILOT_GIT_TOKEN`: For HTTPS URLs like `https://github.com/org/repo.git`. Similarly, refer to [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) for more details on how to generate an access token.
 
     <p align="center">
         <img alt="Airflow git variables" src="https://i.imgur.com/IVbTU3E.png" width="720">
